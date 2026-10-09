@@ -1,0 +1,10 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220" width="320" height="220">
+  <rect width="320" height="220" fill="#f4e3c3"/>
+  <ellipse cx="160" cy="196" rx="70" ry="8" fill="#000" opacity="0.12"/>
+  <path d="M110 50 L210 50 L222 192 L98 192 Z" fill="#c8553d"/>
+  <path d="M110 50 L210 50 L206 34 L114 34 Z" fill="#c8553d" opacity="0.8"/>
+  <rect x="122" y="96" width="76" height="52" rx="4" fill="#fff" opacity="0.92"/>
+  <text x="160" y="118" font-family="Georgia, serif" font-size="10" text-anchor="middle" fill="#2b2118">BREW &amp; BEAN</text>
+  <text x="160" y="136" font-family="Arial, sans-serif" font-size="8" font-weight="bold" text-anchor="middle" fill="#2b2118">YIRGACHEFFE</text>
+  <circle cx="60" cy="170" r="7" fill="#6f3b1e"/><circle cx="75" cy="180" r="6" fill="#4e2812"/><circle cx="258" cy="176" r="7" fill="#6f3b1e"/>
+</svg>
