@@ -9,6 +9,7 @@ export default function BotProtection() {
   const checkboxRef = useRef(null);
 
   // The widget needs focus to start its "human interaction" check
+  // A11Y-ISSUE #1: Moves focus to an invisible element on page load – focus "disappears".
   useEffect(() => {
     checkboxRef.current?.focus();
   }, []);

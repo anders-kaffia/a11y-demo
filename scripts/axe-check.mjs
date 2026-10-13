@@ -19,18 +19,22 @@ const states = [
     setup: async (page) => page.click('.has-submenu > button'),
   },
   {
-    name: 'Search results shown',
+    name: 'Search page, no query',
+    path: 'sok',
+    setup: async () => {},
+  },
+  {
+    name: 'Search page via header quick search',
     setup: async (page) => {
-      await page.fill('input[type=search]', 'kaffe');
-      await page.click('.search-bar button');
+      await page.fill('.header-search input', 'kaffe');
+      await page.press('.header-search input', 'Enter');
       await page.waitForSelector('.result');
     },
   },
   {
     name: 'Search results after infinite scroll',
+    path: 'sok?q=kaffe',
     setup: async (page) => {
-      await page.fill('input[type=search]', 'kaffe');
-      await page.click('.search-bar button');
       await page.waitForSelector('.result');
       await page.keyboard.press('End');
       await page.waitForFunction(() => document.querySelectorAll('.result').length > 24);
@@ -53,11 +57,15 @@ const states = [
   },
   {
     name: 'Newsletter dialog open',
-    setup: async (page) => page.waitForSelector('[role=dialog]', { timeout: 10000 }),
+    setup: async (page) => {
+      await page.mouse.wheel(0, 1200);
+      await page.waitForSelector('[role=dialog]', { timeout: 10000 });
+    },
   },
   {
     name: 'Newsletter dialog with invalid email',
     setup: async (page) => {
+      await page.mouse.wheel(0, 1200);
       await page.waitForSelector('[role=dialog]', { timeout: 10000 });
       await page.fill('#newsletter-email', 'not-an-email');
       await page.click('.dialog button[type=submit]');
@@ -73,7 +81,7 @@ export async function runAxe() {
   for (const state of states) {
     const context = await browser.newContext();
     const page = await context.newPage();
-    await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.goto(URL + (state.path ?? ''), { waitUntil: 'networkidle' });
     await state.setup(page);
     await page.waitForTimeout(300);
 

@@ -18,9 +18,11 @@ const TOTAL_HITS = 1312;
  * Product search with advanced filters. Every field has a label and the
  * form is a search landmark.
  */
-export default function Search({ onSearch }) {
-  const [query, setQuery] = useState('');
-  const [submitted, setSubmitted] = useState(null);
+export default function Search() {
+  // /sok?q=... comes from the quick search in the header
+  const initialQuery = new URLSearchParams(window.location.search).get('q') ?? '';
+  const [query, setQuery] = useState(initialQuery);
+  const [submitted, setSubmitted] = useState(initialQuery.trim() || null);
   const [count, setCount] = useState(PAGE_SIZE);
   const [loading, setLoading] = useState(false);
   const sentinelRef = useRef(null);
@@ -29,10 +31,11 @@ export default function Search({ onSearch }) {
     event.preventDefault();
     setSubmitted(query.trim() || 'kaffe');
     setCount(PAGE_SIZE);
-    onSearch();
   };
 
   // Infinite scroll: load the next page as soon as the end of the list comes into view
+  // A11Y-ISSUE #21: New results load before you reach the footer – it cannot be reached by keyboard.
+  // Nothing is announced to screen readers when new results have loaded.
   useEffect(() => {
     if (!submitted || loading || count >= TOTAL_HITS) return;
     const observer = new IntersectionObserver(
@@ -57,9 +60,9 @@ export default function Search({ onSearch }) {
 
   return (
     <section className="search" aria-labelledby="search-title">
-      <h2 id="search-title">Sök</h2>
+      <h1 id="search-title">Sök</h1>
 
-      <form role="search" onSubmit={handleSubmit}>
+      <form role="search" aria-label="Sök i sortimentet" onSubmit={handleSubmit}>
         <div className="search-bar">
           <input
             type="search"
@@ -74,6 +77,8 @@ export default function Search({ onSearch }) {
         </div>
 
         {/* Four columns side by side, matches the desktop design */}
+        {/* A11Y-ISSUE #17: Four fixed columns – horizontal scrolling when zoomed, column-wise tab order. */}
+        {/* A11Y-ISSUE #20: The search button is far away from the search field. */}
         <fieldset className="search-filters">
           <legend>Avancerad sökning</legend>
 
@@ -149,6 +154,8 @@ export default function Search({ onSearch }) {
       </form>
 
       {submitted && (
+        // A11Y-ISSUE #16: No heading, no list (<ul>/<ol>), the number of results is not announced and
+        // focus is not moved. The results are also irrelevant and have meaningless titles.
         <div className="results">
           <div className="results-summary">
             Visar 1–{count} av 1 312 träffar för ”{submitted}”

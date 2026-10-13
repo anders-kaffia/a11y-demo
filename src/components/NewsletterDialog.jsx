@@ -17,6 +17,8 @@ export default function NewsletterDialog({ onClose, onSubscribe }) {
     onSubscribe(email);
   };
 
+  // A11Y-ISSUE #3: No focus trap, Esc does not close it, the background is not inert, focus is not
+  // moved into the dialog or restored when it closes. The close button is last in the DOM.
   return (
     <div className="backdrop">
       <div
@@ -38,6 +40,7 @@ export default function NewsletterDialog({ onClose, onSubscribe }) {
             type="email"
             autoComplete="email"
             value={email}
+            // A11Y-ISSUE #4: The error is only shown as a red border – no text, no aria-invalid.
             className={invalid ? 'invalid' : undefined}
             onChange={(e) => {
               setEmail(e.target.value);

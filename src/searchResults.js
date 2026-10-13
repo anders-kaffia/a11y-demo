@@ -1,4 +1,5 @@
 // Hard-coded "search index". Every query returns the same hits.
+// A11Y-ISSUE #16: Poor results – duplicates, "Läs mer", "Untitled", internal and outdated pages.
 export const searchResults = [
   {
     title: 'Kaffe',

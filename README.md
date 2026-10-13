@@ -1,15 +1,113 @@
-# Brew & Bean – a11y-demo
+# Brew & Bean – 100 % in the tests, still inaccessible
 
-Demosida som får **0 fel i axe** och **100 i Lighthouse** men som har minst 22 allvarliga tillgänglighetsbrister.
+An AI-generated demo web shop that scores **0 violations in axe-core** and **100 in Lighthouse accessibility**, yet has **at least 30 serious accessibility issues**.
+
+## Why this project exists
+
+AI coding assistants can produce code that *looks* accessible: semantic landmarks, `aria-*` attributes, labels, alt text and roles everywhere. If "passes axe and Lighthouse" is used as the definition of done, the result can still be hard or impossible to use for many people.
+
+This project was generated with an AI coding assistant (Claude Code) to show exactly that. Every page and UI state passes the automated tests, but:
+
+- keyboard users lose focus, get stuck behind a dialog and can never reach the footer
+- screen reader users hear file names, "read more" nine times and nothing at all when they search
+- people using zoom or a screen magnifier get horizontal scrolling, a banner that covers the screen and tooltips that vanish before they can be read
+- people with low vision or colour vision deficiencies, or who use Windows High Contrast, miss text, stock status and focus indicators
+
+**The lesson:** automated tools only cover part of WCAG. They are a useful baseline, not proof of accessibility. You still need to test manually with a keyboard, a screen reader, zoom and magnification, and ideally with real users.
+
+The issues are deliberate, but none of them is exotic. They are patterns found on real websites every day, and an AI assistant can produce them just as easily as a human.
+
+## Test results
+
+| Tool | Result |
+|---|---|
+| axe-core 4.13 (all rules incl. best practices, 11 UI states) | **0 violations** |
+| Lighthouse 12.8 – Accessibility (start page and search page) | **100** |
+| Keyboard, screen reader (NVDA), zoom, magnifier, forced colours | **30+ issues** |
+
+Some issues show up in axe only as *needs review*, for example text on a background image. They do not count as violations, so the score stays at 0 violations and 100 points.
+
+## The issues
+
+Each issue is marked in the code with a comment starting with `A11Y-ISSUE #n`. Search for `A11Y-ISSUE` to find them all.
+
+| # | Issue | Main WCAG criteria |
+|---|---|---|
+| 1 | Hidden "reCAPTCHA" steals focus on page load | 2.4.3, 2.4.7 |
+| 2 | Menu button says "expanded" but the submenu only opens on hover | 2.1.1, 4.1.2 |
+| 3 | Newsletter dialog appears on scroll: no focus management, no focus trap, no Esc | 2.4.3, 2.4.11, 2.1.1 |
+| 4 | Form error shown only as a red border | 3.3.1, 1.4.1 |
+| 5 | Status toast is rarely announced and disappears after 2.5 s | 4.1.3, 2.2.1 |
+| 6 | Cart item count hidden from screen readers | 1.3.1, 4.1.3 |
+| 7 | Product card reading order differs from the visual order | 1.3.2, 2.4.3 |
+| 8 | Six identical "add to cart" buttons | 2.4.6 |
+| 9 | Product names look like headings but are not | 1.3.1 |
+| 10 | Alt text is the file name (`DSC_0042.jpg`) | 1.1.1 |
+| 11 | Sale price reads as "189 kr 139 kr" | 1.3.1 |
+| 12 | "Sold out" is visual only, and the button still works | 1.3.1, 1.4.1 |
+| 13 | Wishlist `div role="button"` cannot be used with a keyboard | 2.1.1 |
+| 14 | Focus indicator is practically invisible | 2.4.7 |
+| 15 | `lang="en"` on a Swedish page | 3.1.1 |
+| 16 | Search results: no list, no heading, nothing announced, poor results | 1.3.1, 4.1.3, 2.4.4 |
+| 17 | Multi-column form with fixed widths does not reflow when zoomed | 1.4.10, 1.4.4 |
+| 18 | Long sentences and abbreviations (plain language) | 3.1.3–3.1.5 |
+| 19 | Sticky banner covers almost the whole screen on a phone in landscape | 1.4.10, 2.4.11 |
+| 20 | Wide layout with large gaps between controls, hard with magnification | – |
+| 21 | Infinite scroll makes the footer unreachable | 2.1.1, 2.4.3 |
+| 22 | All sizes in `px`, root font size locked, so the user's text size setting is ignored | 1.4.4* |
+| 23 | Links: "read more" ×9, file names, raw URLs, PDF without size, new window without warning | 2.4.4, 2.4.9 |
+| 24 | A "table" made of `div` elements | 1.3.1 |
+| 25 | White text on a light hero image | 1.4.3 |
+| 26 | `filter: opacity()` lowers contrast, and axe does not notice | 1.4.3 |
+| 27 | Infographic SVG named only "Illustration" | 1.1.1, 1.4.3 |
+| 28 | Stock status shown by colour alone | 1.4.1 |
+| 29 | Hover-only tooltips that vanish when you move towards them | 1.4.13, 2.1.1 |
+| 30 | Breaks in Windows High Contrast (forced colours) | 1.4.1, 1.4.11, 2.4.7 |
+
+\* Technically passes, because browser zoom still works. It is included as an example of the gap between conformance and usability.
+
+A detailed answer key, with how to demonstrate each issue, why the tools miss it and how to fix it, is in [ANSWER-KEY.md](ANSWER-KEY.md). It also includes a suggested running order for a live demo and the NVDA commands you need.
+
+## About the language
+
+The site content is in Swedish, because the demo was made for a Swedish audience. Everything else in the project (code, comments and documentation) is in English. The page is deliberately marked up as `lang="en"` (issue #15), so screen readers read the Swedish text with an English voice.
+
+## Running it
+
+Requires Node.js 18 or later.
 
 ```bash
 npm install
-npx playwright install chromium
-npm run dev         # visa sidan
-npm run test:a11y   # bygg + kör axe-core (10 UI-tillstånd) och Lighthouse
+npx playwright install chromium   # first time only, used by the test scripts
+npm run dev                       # start the site at http://localhost:5173
+npm run test:a11y                 # build, then run axe-core (11 UI states) and Lighthouse
 ```
 
-Se [FACIT.md](FACIT.md) för alla brister, demoupplägg och NVDA-kommandon.
-**Visa inte facit för publiken innan demon.**
+The site has two pages: the start page (`/`) and the search page (`/sok`, for example `/sok?q=kaffe`).
 
-Produktbilderna kommer från [Unsplash](https://unsplash.com/license) (fri användning, inget krav på attribution). Fotografer: Gerson Cifuentes, David Restrepo, Indra Projects, tommao wang, Katt Galvan och Irene Kredenets.
+Opening `dist/index.html` directly from disk shows a blank page. Use `npm run preview` after `npm run build` instead.
+
+## Try it yourself
+
+- **Keyboard:** reload the page and press Tab. Where is focus? Then try the "Butik" menu, the newsletter dialog and the search page.
+- **Screen reader:** turn on NVDA (Windows) or VoiceOver (macOS) and listen to the start page. Open the links list (NVDA: `Insert+F7`).
+- **Zoom and magnification:** zoom the browser to 200–400 %, or use Windows Magnifier (`Win` + `+`) and hover over the info icon next to a price.
+- **Mobile landscape:** open DevTools device mode, pick a phone and rotate it.
+- **Colour and contrast:** in Chrome DevTools, go to *Rendering* and emulate *Deuteranopia* or *forced-colors: active*.
+- **Text size:** set a larger default font size in your browser settings and compare with another website.
+
+## Do not copy this code
+
+This code is intentionally inaccessible. Do not use it as a template.
+
+## License
+
+The code and documentation are released under the [MIT License](LICENSE).
+
+The photos in `public/img/` are not covered by the MIT License. They are from Unsplash and are used under the [Unsplash License](https://unsplash.com/license).
+
+## Credits
+
+Product and hero photos from [Unsplash](https://unsplash.com/license) (free to use, no attribution required). Photographers: Gerson Cifuentes, David Restrepo, Indra Projects, tommao wang, Katt Galvan, Irene Kredenets and Kelly Sikkema.
+
+Some of the link and content issues were inspired by Imperial College London's [bad accessibility example page](https://www.imperial.ac.uk/staff/tools-and-reference/web-guide/training-and-events/materials/accessibility/bad-example/).
