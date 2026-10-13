@@ -12,6 +12,8 @@ The site content is in Swedish, so the UI texts quoted below are in Swedish, wit
 
 ## Running the demo
 
+The easiest option is the live version at https://anders-kaffia.github.io/a11y-demo/. To run it locally:
+
 ```bash
 npm install
 npx playwright install chromium   # first time only

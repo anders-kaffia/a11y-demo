@@ -2,6 +2,8 @@
 
 An AI-generated demo web shop that scores **0 violations in axe-core** and **100 in Lighthouse accessibility**, yet has **at least 30 serious accessibility issues**.
 
+**Live demo:** https://anders-kaffia.github.io/a11y-demo/
+
 ## Why this project exists
 
 AI coding assistants can produce code that *looks* accessible: semantic landmarks, `aria-*` attributes, labels, alt text and roles everywhere. If "passes axe and Lighthouse" is used as the definition of done, the result can still be hard or impossible to use for many people.
@@ -86,6 +88,18 @@ npm run test:a11y                 # build, then run axe-core (11 UI states) and 
 The site has two pages: the start page (`/`) and the search page (`/sok`, for example `/sok?q=kaffe`).
 
 Opening `dist/index.html` directly from disk shows a blank page. Use `npm run preview` after `npm run build` instead.
+
+## Deploying to GitHub Pages
+
+The workflow in [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml) builds the site and publishes it to GitHub Pages on every push to `main`. It sets `BASE_PATH` to the repository name, so the site works under `https://<user>.github.io/<repo>/`. The build also copies `index.html` to `sok/index.html`, because GitHub Pages has no fallback for single-page apps.
+
+To enable it in a fork, go to *Settings → Pages* and set *Source* to *GitHub Actions*.
+
+To build for a sub-path locally:
+
+```bash
+BASE_PATH=/a11y-demo/ npm run build
+```
 
 ## Try it yourself
 

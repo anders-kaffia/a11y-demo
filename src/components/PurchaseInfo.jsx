@@ -25,7 +25,7 @@ export default function PurchaseInfo() {
           normalt inte omfattas av ångerrätten, såvida inte annat särskilt avtalats mellan parterna
           eller framgår av de kampanjvillkor som gällde vid tidpunkten för köpet.{' '}
           {/* A11Y-ISSUE #23: "Läs mer" (read more) opens a PDF in a new window without warning. */}
-          <a href="/villkor.pdf" target="_blank" rel="noreferrer">
+          <a href={`${import.meta.env.BASE_URL}villkor.pdf`} target="_blank" rel="noreferrer">
             Läs mer
           </a>
         </p>
@@ -64,7 +64,7 @@ export default function PurchaseInfo() {
 
         <p>
           {/* A11Y-ISSUE #23: PDF link without file size, and "Klicka här" (click here). */}
-          <a href="/villkor.pdf">Köpvillkor [pdf]</a> · <a href="#">Klicka här</a> för
+          <a href={`${import.meta.env.BASE_URL}villkor.pdf`}>Köpvillkor [pdf]</a> · <a href="#">Klicka här</a> för
           returformulär.
         </p>
       </section>

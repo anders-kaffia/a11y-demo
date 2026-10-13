@@ -6,7 +6,7 @@ export const products = [
     description: 'Blommig och frisk med toner av jasmin och citron.',
     price: 149,
     stock: 'in',
-    image: '/img/DSC_0042.jpg',
+    image: import.meta.env.BASE_URL + 'img/DSC_0042.jpg',
     photoFile: 'DSC_0042.jpg',
   },
   {
@@ -15,7 +15,7 @@ export const products = [
     description: 'Balanserad och söt, med karamell och rött äpple.',
     price: 129,
     stock: 'low',
-    image: '/img/DSC_0057.jpg',
+    image: import.meta.env.BASE_URL + 'img/DSC_0057.jpg',
     photoFile: 'DSC_0057.jpg',
   },
   {
@@ -25,7 +25,7 @@ export const products = [
     price: 189,
     salePrice: 139,
     stock: 'in',
-    image: '/img/DSC_0061.jpg',
+    image: import.meta.env.BASE_URL + 'img/DSC_0061.jpg',
     photoFile: 'DSC_0061.jpg',
   },
   {
@@ -35,7 +35,7 @@ export const products = [
     price: 169,
     soldOut: true,
     stock: 'out',
-    image: '/img/DSC_0078.jpg',
+    image: import.meta.env.BASE_URL + 'img/DSC_0078.jpg',
     photoFile: 'DSC_0078.jpg',
   },
   {
@@ -44,7 +44,7 @@ export const products = [
     description: 'Vår vardagsblandning. Nötig, mjuk och förlåtande.',
     price: 119,
     stock: 'in',
-    image: '/img/DSC_0083.jpg',
+    image: import.meta.env.BASE_URL + 'img/DSC_0083.jpg',
     photoFile: 'DSC_0083.jpg',
   },
   {
@@ -53,7 +53,7 @@ export const products = [
     description: 'All smak, inga darriga händer.',
     price: 129,
     stock: 'low',
-    image: '/img/DSC_0090.jpg',
+    image: import.meta.env.BASE_URL + 'img/DSC_0090.jpg',
     photoFile: 'DSC_0090.jpg',
   },
 ];

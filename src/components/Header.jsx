@@ -23,7 +23,7 @@ export default function Header({ cartCount, showSearch }) {
 
   return (
     <header className="site-header">
-      <a href="/" className="logo">
+      <a href={import.meta.env.BASE_URL} className="logo">
         Brew &amp; Bean
       </a>
 
@@ -58,7 +58,12 @@ export default function Header({ cartCount, showSearch }) {
       </nav>
 
       {showSearch && (
-        <form role="search" aria-label="Snabbsök" action="/sok" className="header-search">
+        <form
+          role="search"
+          aria-label="Snabbsök"
+          action={`${import.meta.env.BASE_URL}sok/`}
+          className="header-search"
+        >
           <input type="search" name="q" aria-label="Sök" placeholder="Sök" />
           <button type="submit" aria-label="Sök">
             <SearchIcon />

@@ -10,7 +10,7 @@ import Search from './components/Search.jsx';
 import PurchaseInfo from './components/PurchaseInfo.jsx';
 import { products } from './products.js';
 
-const isSearchPage = window.location.pathname.replace(/\/$/, '') === '/sok';
+const isSearchPage = /\/sok\/?$/.test(window.location.pathname);
 
 export default function App() {
   const [cart, setCart] = useState([]);
