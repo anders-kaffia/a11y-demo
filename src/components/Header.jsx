@@ -18,7 +18,7 @@ export default function Header({ cartCount }) {
         Brew &amp; Bean
       </a>
 
-      <nav aria-label="Main">
+      <nav aria-label="Huvudmeny">
         <ul className="menu">
           <li
             className="has-submenu"
@@ -32,24 +32,24 @@ export default function Header({ cartCount }) {
               aria-controls="shop-submenu"
               onClick={() => setShopOpen((open) => !open)}
             >
-              Shop
+              Butik
             </button>
             <ul id="shop-submenu" className="submenu">
-              <li><a href="#main">Single origin</a></li>
-              <li><a href="#main">Blends</a></li>
-              <li><a href="#main">Equipment</a></li>
-              <li><a href="#main">Gift cards</a></li>
+              <li><a href="#main">Sortrent</a></li>
+              <li><a href="#main">Blandningar</a></li>
+              <li><a href="#main">Utrustning</a></li>
+              <li><a href="#main">Presentkort</a></li>
             </ul>
           </li>
-          <li><a href="#main">Subscriptions</a></li>
-          <li><a href="#main">About us</a></li>
-          <li><a href="#main">Contact</a></li>
+          <li><a href="#main">Prenumerationer</a></li>
+          <li><a href="#main">Om oss</a></li>
+          <li><a href="#main">Kontakt</a></li>
         </ul>
       </nav>
 
       <button type="button" className="cart">
         <CartIcon />
-        <span>Cart</span>
+        <span>Varukorg</span>
         {/* Hidden from screen readers: "left paren two right paren" sounds awful */}
         <span aria-hidden="true">({cartCount})</span>
       </button>

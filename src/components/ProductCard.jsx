@@ -19,16 +19,16 @@ export default function ProductCard({ product, onAdd }) {
     <article className={`card${product.soldOut ? ' card--sold-out' : ''}`}>
       {/* Content order is handled with CSS grid areas for the layout */}
       <button type="button" className="card-add" onClick={() => onAdd(product)}>
-        Add to cart
+        Lägg i varukorgen
       </button>
 
       <div className="card-price">
         {onSale ? (
           <>
-            <s>${product.price}</s> <span className="sale">${product.salePrice}</span>
+            <s>{product.price} kr</s> <span className="sale">{product.salePrice} kr</span>
           </>
         ) : (
-          <>${product.price}</>
+          <>{product.price} kr</>
         )}
       </div>
 
@@ -39,13 +39,13 @@ export default function ProductCard({ product, onAdd }) {
 
       {product.soldOut && (
         // Purely visual label, the image already conveys the product
-        <span className="badge" aria-hidden="true">Sold out</span>
+        <span className="badge" aria-hidden="true">Slutsåld</span>
       )}
 
       <div
         role="button"
         tabIndex={0}
-        aria-label="Add to wishlist"
+        aria-label="Lägg till i önskelistan"
         aria-pressed={wished}
         className="card-wish"
         onClick={() => setWished((w) => !w)}

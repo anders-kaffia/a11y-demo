@@ -26,13 +26,13 @@ export default function NewsletterDialog({ onClose, onSubscribe }) {
         aria-describedby="newsletter-desc"
         className="dialog"
       >
-        <h2 id="newsletter-title">Get 10% off your first order</h2>
+        <h2 id="newsletter-title">Få 10 % rabatt på din första beställning</h2>
         <p id="newsletter-desc">
-          Join our newsletter for brewing tips, new arrivals and members-only offers.
+          Prenumerera på vårt nyhetsbrev och få bryggtips, nyheter och erbjudanden för medlemmar (ca två gånger i månaden).
         </p>
 
         <form onSubmit={handleSubmit} noValidate>
-          <label htmlFor="newsletter-email">Email</label>
+          <label htmlFor="newsletter-email">E-post</label>
           <input
             id="newsletter-email"
             type="email"
@@ -45,11 +45,11 @@ export default function NewsletterDialog({ onClose, onSubscribe }) {
             }}
           />
           <button type="submit" className="primary">
-            Subscribe
+            Prenumerera
           </button>
         </form>
 
-        <button type="button" className="dialog-close" aria-label="Close" onClick={onClose}>
+        <button type="button" className="dialog-close" aria-label="Stäng" onClick={onClose}>
           ×
         </button>
       </div>

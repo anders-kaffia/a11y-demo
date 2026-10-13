@@ -16,8 +16,8 @@ export default function BotProtection() {
   return (
     <div className="visually-hidden">
       <input ref={checkboxRef} type="checkbox" id="bot-check" />
-      <label htmlFor="bot-check">I'm not a robot</label>
-      <p>Protected by reCAPTCHA. Privacy – Terms</p>
+      <label htmlFor="bot-check">Jag är inte en robot</label>
+      <p>Skyddas av reCAPTCHA. Integritet – Villkor</p>
     </div>
   );
 }

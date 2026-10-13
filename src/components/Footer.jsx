@@ -2,12 +2,16 @@ export default function Footer() {
   return (
     <footer className="site-footer">
       <p>
-        Free shipping on orders over $40. For delivery times, <a href="#main">click here</a>.
+        Fri frakt vid köp över 400 kr. För leveranstider, <a href="#main">klicka här</a>.
       </p>
       <p>
-        Questions about returns? <a href="#main">Click here</a>.
+        Frågor om returer? <a href="#main">Klicka här</a>.
       </p>
-      <p>© 2026 Brew &amp; Bean Roasters</p>
+      <p>
+        <a href="#main">Kundtjänst</a> · <a href="#main">Köpvillkor</a> ·{' '}
+        <a href="#main">Integritetspolicy</a> · <a href="#main">Tillgänglighetsredogörelse</a>
+      </p>
+      <p>© 2026 Brew &amp; Bean Rosteri AB</p>
     </footer>
   );
 }

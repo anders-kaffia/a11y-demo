@@ -19,6 +19,28 @@ const states = [
     setup: async (page) => page.click('.has-submenu > button'),
   },
   {
+    name: 'Search results shown',
+    setup: async (page) => {
+      await page.fill('input[type=search]', 'kaffe');
+      await page.click('.search-bar button');
+      await page.waitForSelector('.result');
+    },
+  },
+  {
+    name: 'Search results after infinite scroll',
+    setup: async (page) => {
+      await page.fill('input[type=search]', 'kaffe');
+      await page.click('.search-bar button');
+      await page.waitForSelector('.result');
+      await page.keyboard.press('End');
+      await page.waitForFunction(() => document.querySelectorAll('.result').length > 24);
+    },
+  },
+  {
+    name: 'Info banner closed',
+    setup: async (page) => page.click('.info-banner-close'),
+  },
+  {
     name: 'Toast visible after "Add to cart"',
     setup: async (page) => {
       await page.click('.card-add >> nth=0');
