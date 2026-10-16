@@ -134,6 +134,11 @@ const states = [
     setup: async (page) => page.waitForSelector('.result-list'),
   },
   {
+    name: 'Accessible: empty cart page',
+    path: 'tillganglig/varukorg/',
+    setup: async () => {},
+  },
+  {
     name: 'Accessible: checkout with errors',
     path: 'tillganglig/',
     setup: async (page) => {

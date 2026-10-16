@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 const stockText = {
   in: 'I lager. Beställ före kl. 14 på vardagar, så skickar vi samma dag.',
-  low: 'Få kvar (3 st).',
+  low: 'Få kvar (3 stycken).',
   out: 'Slut i lager. Väntas åter vecka 3.',
 };
 
@@ -15,6 +15,9 @@ const altText = {
   5: 'Espresso med ljusbrun crema i ett litet glas på ett fat.',
   6: 'Kopp kaffe med crema på ett mörkblått fat, sedd ovanifrån.',
 };
+
+// Written out, since screen readers say "st" as a word and not everyone knows the abbreviation
+export const pieces = (count) => `${count} ${count === 1 ? 'styck' : 'stycken'}`;
 
 export const InfoIcon = () => (
   <svg aria-hidden="true" focusable="false" width="24" height="24" viewBox="0 0 24 24" className="notice-icon">
@@ -39,7 +42,7 @@ const StockIcon = ({ stock }) => (
   </svg>
 );
 
-export default function ProductCard({ product, inCart, onAdd, onCartClick }) {
+export default function ProductCard({ product, inCart, onAdd }) {
   const [saved, setSaved] = useState(false);
   const [wishStatus, setWishStatus] = useState('');
   // The cart count when the notice was closed; it comes back when the count changes
@@ -76,7 +79,9 @@ export default function ProductCard({ product, inCart, onAdd, onCartClick }) {
       </p>
 
       <details className="card-details">
-        <summary>Mer om förpackningen</summary>
+        <summary>
+          Mer om förpackningen<span className="visually-hidden">, {product.name}</span>
+        </summary>
         <ul>
           <li>250 g hela bönor.</li>
           <li>Jämförpris: {price * 4} kr/kg.</li>
@@ -121,11 +126,11 @@ export default function ProductCard({ product, inCart, onAdd, onCartClick }) {
       <div className={showNotice ? 'notice' : undefined}>
         {showNotice && <InfoIcon />}
         <div className="notice-body">
-          <p role="status">{showNotice ? `${product.name} ligger i varukorgen (${inCart} st).` : ''}</p>
+          <p role="status">{showNotice ? `${product.name} ligger i varukorgen (${pieces(inCart)}).` : ''}</p>
           {showNotice && (
-            <button type="button" className="link-button" onClick={onCartClick}>
+            <a href={`${import.meta.env.BASE_URL}tillganglig/varukorg/`} className="link-button">
               Gå till varukorgen
-            </button>
+            </a>
           )}
         </div>
         {showNotice && (

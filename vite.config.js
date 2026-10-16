@@ -3,14 +3,14 @@ import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// GitHub Pages has no SPA fallback, so give each search page its own index.html
+// GitHub Pages has no SPA fallback, so give the search pages and the cart page their own index.html
 const searchPageRoutes = () => ({
   name: 'search-page-routes',
-  // Dev server: serve the accessible version's search page from its own index.html
+  // Dev server: serve the accessible version's search and cart pages from its own index.html
   configureServer(server) {
     server.middlewares.use((req, _res, next) => {
-      if (/\/tillganglig\/sok\/?(\?|$)/.test(req.url)) {
-        req.url = req.url.replace(/tillganglig\/sok\/?/, 'tillganglig/');
+      if (/\/tillganglig\/(sok|varukorg)\/?(\?|$)/.test(req.url)) {
+        req.url = req.url.replace(/tillganglig\/(sok|varukorg)\/?/, 'tillganglig/');
       }
       next();
     });
@@ -21,6 +21,8 @@ const searchPageRoutes = () => ({
     copyFileSync(resolve(dist, 'index.html'), resolve(dist, 'sok/index.html'));
     mkdirSync(resolve(dist, 'tillganglig/sok'), { recursive: true });
     copyFileSync(resolve(dist, 'tillganglig/index.html'), resolve(dist, 'tillganglig/sok/index.html'));
+    mkdirSync(resolve(dist, 'tillganglig/varukorg'), { recursive: true });
+    copyFileSync(resolve(dist, 'tillganglig/index.html'), resolve(dist, 'tillganglig/varukorg/index.html'));
   },
 });
 

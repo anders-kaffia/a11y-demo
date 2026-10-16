@@ -10,7 +10,7 @@ const CartIcon = () => (
   </svg>
 );
 
-export default function Header({ cartCount, showSearch, onCartClick }) {
+export default function Header({ cartCount, showSearch, isCartPage }) {
   const [shopOpen, setShopOpen] = useState(false);
   const shopRef = useRef(null);
 
@@ -78,10 +78,14 @@ export default function Header({ cartCount, showSearch, onCartClick }) {
           </form>
         )}
 
-        <button type="button" className="cart" onClick={onCartClick}>
+        <a
+          href={`${import.meta.env.BASE_URL}tillganglig/varukorg/`}
+          className="cart"
+          aria-current={isCartPage ? 'page' : undefined}
+        >
           <CartIcon />
           Varukorg ({cartCount} {cartCount === 1 ? 'vara' : 'varor'})
-        </button>
+        </a>
       </div>
     </header>
   );

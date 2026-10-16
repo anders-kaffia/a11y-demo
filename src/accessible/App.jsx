@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import VersionSwitch from '../shared/VersionSwitch.jsx';
 import Header from './components/Header.jsx';
 import InfoBanner from './components/InfoBanner.jsx';
@@ -11,14 +11,39 @@ import Footer from './components/Footer.jsx';
 import { products } from '../products.js';
 
 const isSearchPage = /\/sok\/?$/.test(window.location.pathname);
+const isCartPage = /\/varukorg\/?$/.test(window.location.pathname);
 
 const emptyDetails = { name: '', address: '', zip: '', city: '', email: '' };
 
+// The cart is its own page, so the cart and the address are saved between page loads. The cart is kept
+// in localStorage so it is the same in every tab; the address only in sessionStorage.
+const load = (storage, key, fallback) => {
+  try {
+    return JSON.parse(storage.getItem(key)) ?? fallback;
+  } catch {
+    return fallback;
+  }
+};
+const save = (storage, key, value) => {
+  try {
+    storage.setItem(key, JSON.stringify(value));
+  } catch {}
+};
+
 export default function App() {
-  const [cart, setCart] = useState([]);
-  const [showCheckout, setShowCheckout] = useState(false);
+  const [cart, setCart] = useState(() =>
+    load(localStorage, 'cart', []).map((id) => products.find((p) => p.id === id)).filter(Boolean)
+  );
   // Kept here so nothing is lost when the user leaves the checkout and comes back
-  const [details, setDetails] = useState(emptyDetails);
+  const [details, setDetails] = useState(() => load(sessionStorage, 'checkout-details', emptyDetails));
+
+  useEffect(() => save(localStorage, 'cart', cart.map((p) => p.id)), [cart]);
+  useEffect(() => save(sessionStorage, 'checkout-details', details), [details]);
+
+  useEffect(() => {
+    if (isCartPage) document.title = 'Varukorg – Brew & Bean (tillgänglig version)';
+  }, []);
+
   const addToCart = (product) => setCart([...cart, product]);
 
   const removeFromCart = (productId) => {
@@ -27,16 +52,6 @@ export default function App() {
   };
 
   const removeAllOf = (productId) => setCart(cart.filter((p) => p.id !== productId));
-
-  const openCheckout = () => {
-    setShowCheckout(true);
-    window.scrollTo(0, 0);
-  };
-
-  const closeCheckout = () => {
-    setShowCheckout(false);
-    window.scrollTo(0, 0);
-  };
 
   const completeCheckout = () => {
     setCart([]);
@@ -50,10 +65,10 @@ export default function App() {
       </a>
       <VersionSwitch />
       <InfoBanner />
-      <Header cartCount={cart.length} showSearch={!isSearchPage} onCartClick={openCheckout} />
+      <Header cartCount={cart.length} showSearch={!isSearchPage} isCartPage={isCartPage} />
 
       <main id="main" tabIndex={-1}>
-        {showCheckout ? (
+        {isCartPage ? (
           <Checkout
             cart={cart}
             details={details}
@@ -61,7 +76,6 @@ export default function App() {
             onAdd={addToCart}
             onRemove={removeFromCart}
             onRemoveAll={removeAllOf}
-            onBack={closeCheckout}
             onComplete={completeCheckout}
           />
         ) : isSearchPage ? (
@@ -88,7 +102,6 @@ export default function App() {
                       product={product}
                       inCart={cart.filter((p) => p.id === product.id).length}
                       onAdd={addToCart}
-                      onCartClick={openCheckout}
                     />
                   </li>
                 ))}

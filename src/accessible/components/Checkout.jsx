@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { InfoIcon } from './ProductCard.jsx';
+import { InfoIcon, pieces } from './ProductCard.jsx';
 
+const shopUrl = `${import.meta.env.BASE_URL}tillganglig/`;
 const steps = ['Varukorg och adress', 'Betalning', 'Granska och skicka'];
 const grindOptions = ['Hela bönor', 'Grovmalet (för presskanna)', 'Mellanmalet (för bryggare)', 'Finmalet (för espresso)'];
 
@@ -18,7 +19,7 @@ const fields = [
  */
 const errorText = (f) => `Fyll i ${f.label.toLowerCase()}${f.id === 'email' ? ', till exempel namn@exempel.se' : ''}.`;
 
-export default function Checkout({ cart, details, onDetailsChange, onAdd, onRemove, onRemoveAll, onBack, onComplete }) {
+export default function Checkout({ cart, details, onDetailsChange, onAdd, onRemove, onRemoveAll, onComplete }) {
   const [step, setStep] = useState(0);
   const [grind, setGrind] = useState(grindOptions[0]);
   const [errors, setErrors] = useState([]);
@@ -29,6 +30,7 @@ export default function Checkout({ cart, details, onDetailsChange, onAdd, onRemo
   const firstRender = useRef(true);
   const linesHeadingRef = useRef(null);
   const emptyHeadingRef = useRef(null);
+  const previousCount = useRef(cart.length);
 
   useEffect(() => {
     if (firstRender.current) {
@@ -42,15 +44,17 @@ export default function Checkout({ cart, details, onDetailsChange, onAdd, onRemo
     if (errors.length) errorRef.current?.focus();
   }, [errors]);
 
+  // Only when the last item is removed – not when the page loads with an empty cart
   useEffect(() => {
-    if (cart.length === 0) emptyHeadingRef.current?.focus();
+    if (cart.length === 0 && previousCount.current > 0) emptyHeadingRef.current?.focus();
+    previousCount.current = cart.length;
   }, [cart.length]);
 
   // "Ta bort en" lowers the count; with only one left the same button says "Ta bort" and removes the line
   const decrease = (product, quantity) => {
     if (quantity > 1) {
       onRemove(product.id);
-      setNotice(`Du tog bort en ${product.name}. Nu har du ${quantity - 1} st.`);
+      setNotice(`Du tog bort en ${product.name}. Nu har du ${pieces(quantity - 1)}.`);
     } else {
       onRemoveAll(product.id);
       setNotice(`Du tog bort ${product.name} från varukorgen.`);
@@ -60,7 +64,7 @@ export default function Checkout({ cart, details, onDetailsChange, onAdd, onRemo
 
   const increase = (product, quantity) => {
     onAdd(product);
-    setNotice(`Du lade till en ${product.name}. Nu har du ${quantity + 1} st.`);
+    setNotice(`Du lade till en ${product.name}. Nu har du ${pieces(quantity + 1)}.`);
   };
 
   const lines = Object.values(
@@ -85,9 +89,9 @@ export default function Checkout({ cart, details, onDetailsChange, onAdd, onRemo
           <p>Vi har skickat en bekräftelse till {order.email}. Du behöver inte göra något mer.</p>
           <p>Kaffet skickas nästa måndag när det har rostats.</p>
         </div>
-        <button type="button" className="primary" onClick={onBack}>
+        <a href={shopUrl} className="primary">
           Tillbaka till butiken
-        </button>
+        </a>
       </section>
     );
   }
@@ -99,9 +103,9 @@ export default function Checkout({ cart, details, onDetailsChange, onAdd, onRemo
           Varukorg
         </h1>
         <p>Din varukorg är tom.</p>
-        <button type="button" className="primary" onClick={onBack}>
+        <a href={shopUrl} className="primary">
           Tillbaka till butiken
-        </button>
+        </a>
       </section>
     );
   }
@@ -117,9 +121,9 @@ export default function Checkout({ cart, details, onDetailsChange, onAdd, onRemo
 
   return (
     <section className="checkout" aria-labelledby="checkout-title">
-      <button type="button" className="link-button" onClick={onBack}>
+      <a href={shopUrl} className="link-button">
         Tillbaka till butiken
-      </button>
+      </a>
       <h1 id="checkout-title">Varukorg</h1>
       <p>Det finns ingen tidsgräns. Det du fyller i sparas även om du går tillbaka till butiken.</p>
 
@@ -189,7 +193,7 @@ export default function Checkout({ cart, details, onDetailsChange, onAdd, onRemo
                 <p className="line-text">
                   <strong>{product.name}</strong>
                   <br />
-                  {quantity} st, {quantity * (product.salePrice ?? product.price)} kr
+                  {pieces(quantity)}, {quantity * (product.salePrice ?? product.price)} kr
                 </p>
                 {/* The product name is in every button's name, so it is clear which product they change */}
                 <div className="line-buttons">
@@ -282,7 +286,7 @@ export default function Checkout({ cart, details, onDetailsChange, onAdd, onRemo
           <dl className="review">
             <dt>Varor</dt>
             <dd>
-              {lines.map(({ product, quantity }) => `${quantity} st ${product.name}`).join(', ')}
+              {lines.map(({ product, quantity }) => `${pieces(quantity)} ${product.name}`).join(', ')}
             </dd>
             <dt>Malning</dt>
             <dd>{grind}</dd>

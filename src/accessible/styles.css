@@ -96,8 +96,10 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; co
 
 a { color: var(--brand); text-underline-offset: 0.15em; }
 a:hover { text-decoration-thickness: 0.15em; }
-.standalone-link,
-.error-summary a { display: inline-block; min-width: 2.75rem; padding: 0.625rem 0; }
+.standalone-link { display: inline-block; min-width: 2.75rem; padding: 0.625rem 0; }
+/* No min-width here: it puts a gap after short words like "Ort". Each link is on its own line with
+   space around it, so the target is still large enough (2.5.8, spacing exception). */
+.error-summary a { display: inline-block; padding: 0.625rem 0; }
 
 .visually-hidden {
   position: absolute !important;
@@ -137,6 +139,12 @@ button { font: inherit; cursor: pointer; }
 .secondary:hover { background: var(--soft); }
 .secondary.is-saved { color: var(--on-brand); background: var(--brand-dark); }
 .secondary.is-saved::before { content: '✓ '; }
+/* Links that look like buttons */
+a.primary,
+a.link-button { display: inline-flex; align-items: center; }
+a.primary,
+a.cart { text-decoration: none; }
+
 .link-button {
   min-height: 2.75rem;
   padding: 0;
@@ -335,7 +343,7 @@ select {
 input[aria-invalid='true'] { border-color: var(--sale); border-width: 3px; }
 .field-error { margin: 0; color: var(--sale); }
 .hint { margin: 0; color: var(--muted); }
-.confirmation { padding: 1rem 1.25rem; border: 2px solid var(--ok); border-left-width: 0.5rem; border-radius: 0.5rem; background: var(--ok-bg); }
+.confirmation { padding: 1rem 1.25rem; border: 2px solid var(--ok); border-left-width: 0.5rem; border-radius: 0.5rem; background: var(--ok-bg); margin-bottom: 1.5rem; }
 .confirmation p { margin: 0.25rem 0; }
 
 /* ---------- Search ---------- */
