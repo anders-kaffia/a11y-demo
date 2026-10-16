@@ -20,6 +20,18 @@ const QrCode = () => (
 );
 
 /**
+ * Modern floating label: a real <label>, so every field has an accessible name.
+ */
+// A11Y-ISSUE #36: The label sits inside the field like a placeholder, shrinks to 11 px when you type
+// and is cut off when it is long. No autocomplete, so nothing can be filled in automatically.
+const FloatField = ({ id, label, type = 'text', inputMode }) => (
+  <div className="float-field">
+    <input id={id} type={type} inputMode={inputMode} placeholder=" " />
+    <label htmlFor={id}>{label}</label>
+  </div>
+);
+
+/**
  * Grind selector. A proper ARIA slider with a label, min/max, value and value text.
  */
 function GrindSlider({ value, onChange }) {
@@ -108,51 +120,45 @@ export default function Checkout({ cart, onBack, onExpire, onComplete }) {
 
       {step === 1 && (
         <form
-          className="checkout-form"
+          className="checkout-form checkout-columns"
           onSubmit={(e) => {
             e.preventDefault();
             setStep(2);
           }}
         >
-          <h2>Din order</h2>
-          <ul className="checkout-lines">
-            {lines.map(({ product, quantity }) => (
-              <li key={product.id}>
-                <span>
-                  {quantity} × {product.name}
-                </span>
-                <span>{quantity * (product.salePrice ?? product.price)} kr</span>
-              </li>
-            ))}
-          </ul>
-          <p className="checkout-total">Summa: {total} kr inkl. moms, exkl. frakt</p>
+          <div className="checkout-column">
+            <h2>Din order</h2>
+            <ul className="checkout-lines">
+              {lines.map(({ product, quantity }) => (
+                <li key={product.id}>
+                  <span>
+                    {quantity} × {product.name}
+                  </span>
+                  <span>{quantity * (product.salePrice ?? product.price)} kr</span>
+                </li>
+              ))}
+            </ul>
+            <p className="checkout-total">Summa: {total} kr inkl. moms, exkl. frakt</p>
 
-          <GrindSlider value={grind} onChange={setGrind} />
-
-          <h2>Leveransuppgifter</h2>
-          {/* A11Y-ISSUE #18: Abbreviations without explanation ("ev.", "c/o", "Postnr.", "OCR"). */}
-          <label htmlFor="co-name">Namn</label>
-          <input id="co-name" autoComplete="name" />
-          <label htmlFor="co-address">Gatuadress</label>
-          <input id="co-address" autoComplete="street-address" />
-          <label htmlFor="co-careof">c/o (ev.)</label>
-          <input id="co-careof" />
-          <div className="checkout-row">
-            <div>
-              <label htmlFor="co-zip">Postnr.</label>
-              <input id="co-zip" autoComplete="postal-code" inputMode="numeric" />
-            </div>
-            <div>
-              <label htmlFor="co-city">Ort</label>
-              <input id="co-city" autoComplete="address-level2" />
-            </div>
+            <GrindSlider value={grind} onChange={setGrind} />
           </div>
-          <label htmlFor="co-email">E-post (för OCR och leveransavisering)</label>
-          <input id="co-email" type="email" autoComplete="email" />
 
-          <button type="submit" className="primary">
-            Fortsätt
-          </button>
+          <div className="checkout-column">
+            <h2>Leveransuppgifter</h2>
+            {/* A11Y-ISSUE #18: Abbreviations without explanation ("ev.", "c/o", "Postnr.", "OCR"). */}
+            <FloatField id="co-name" label="Namn" />
+            <FloatField id="co-address" label="Gatuadress" />
+            <FloatField id="co-careof" label="c/o (ev.)" />
+            <div className="checkout-row">
+              <FloatField id="co-zip" label="Postnr." inputMode="numeric" />
+              <FloatField id="co-city" label="Ort" />
+            </div>
+            <FloatField id="co-email" type="email" label="E-post (för OCR och leveransavisering)" />
+
+            <button type="submit" className="primary">
+              Fortsätt
+            </button>
+          </div>
         </form>
       )}
 

@@ -1,0 +1,38 @@
+/* The issue list page builds on the accessible version's styles */
+.errors { max-width: 56rem; padding-top: 1rem; }
+.errors h1 { font-size: clamp(1.75rem, 5vw, 2.5rem); }
+.errors .summary-box p { margin: 0.5rem 0; }
+
+.method-grid {
+  display: grid;
+  /* At most two cards per row */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: 1.5rem;
+}
+.method {
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+}
+.method h3 { margin: 0 0 0.5rem; }
+.method ul { display: grid; gap: 0.5rem; margin: 0; padding-left: 1.25rem; }
+
+.issue-list { display: grid; gap: 1rem; margin: 1.5rem 0 0; padding: 0; list-style: none; }
+.issue-list[hidden] { display: none; }
+.issue {
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 0.375rem solid var(--sale);
+  border-radius: 0.75rem;
+}
+.issue h3 { margin: 0 0 0.75rem; }
+.issue-number { color: var(--sale); }
+.issue dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.375rem 1rem; margin: 0; }
+.issue dt { font-weight: 700; }
+.issue dd { margin: 0; }
+@media (max-width: 36rem) {
+  .issue dl { grid-template-columns: 1fr; }
+  .issue dd { margin-bottom: 0.5rem; }
+}

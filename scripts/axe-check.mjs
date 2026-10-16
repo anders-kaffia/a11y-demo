@@ -109,6 +109,117 @@ const states = [
       await page.click('.dialog button[type=submit]');
     },
   },
+  // ---------- The accessible version ----------
+  {
+    name: 'Accessible: start page',
+    path: 'tillganglig/',
+    setup: async () => {},
+  },
+  {
+    name: 'Accessible: shop menu open',
+    path: 'tillganglig/',
+    setup: async (page) => page.click('.has-submenu > button'),
+  },
+  {
+    name: 'Accessible: newsletter error, then status message',
+    path: 'tillganglig/',
+    setup: async (page) => {
+      await page.click('.newsletter button[type=submit]');
+      await page.click('.card .primary >> nth=0');
+    },
+  },
+  {
+    name: 'Accessible: search results',
+    path: 'tillganglig/sok/?q=kaffe',
+    setup: async (page) => page.waitForSelector('.result-list'),
+  },
+  {
+    name: 'Accessible: checkout with errors',
+    path: 'tillganglig/',
+    setup: async (page) => {
+      await page.click('.card .primary >> nth=0');
+      await page.click('.cart');
+      await page.click('.checkout-form button[type=submit]');
+    },
+  },
+  {
+    name: 'Accessible: checkout review step',
+    path: 'tillganglig/',
+    setup: async (page) => {
+      await page.click('.card .primary >> nth=0');
+      await page.click('.cart');
+      for (const [id, value] of [['name', 'Ingrid'], ['address', 'Gatan 1'], ['zip', '11122'], ['city', 'Stockholm'], ['email', 'a@b.se']]) {
+        await page.fill(`#co-${id}`, value);
+      }
+      await page.click('.checkout-form button[type=submit]');
+      await page.click('.checkout .button-row .primary');
+    },
+  },
+  {
+    name: 'Accessible: receipt',
+    path: 'tillganglig/',
+    setup: async (page) => {
+      await page.click('.card .primary >> nth=0');
+      await page.click('.cart');
+      for (const [id, value] of [['name', 'Ingrid'], ['address', 'Gatan 1'], ['zip', '11122'], ['city', 'Stockholm'], ['email', 'a@b.se']]) {
+        await page.fill(`#co-${id}`, value);
+      }
+      await page.click('.checkout-form button[type=submit]');
+      await page.click('.checkout .button-row .primary');
+      await page.click('.checkout .button-row .primary');
+      await page.waitForSelector('text=Ordernummer');
+    },
+  },
+  {
+    name: 'Accessible: dark mode (system setting)',
+    path: 'tillganglig/',
+    colorScheme: 'dark',
+    setup: async (page) => {
+      await page.click('.card .primary >> nth=0');
+      await page.click('.newsletter button[type=submit]');
+    },
+  },
+  {
+    name: 'Accessible: dark mode checkout with errors',
+    path: 'tillganglig/',
+    colorScheme: 'dark',
+    setup: async (page) => {
+      await page.click('.card .primary >> nth=0');
+      await page.click('.cart');
+      await page.click('.checkout-form button[type=submit]');
+    },
+  },
+  {
+    name: 'Accessible: dark mode chosen with the button',
+    path: 'tillganglig/sok/?q=kaffe',
+    setup: async (page) => {
+      await page.click('.theme-toggle');
+      await page.waitForSelector('html[data-theme=dark]');
+    },
+  },
+  {
+    name: 'Accessible: mobile layout',
+    path: 'tillganglig/',
+    viewport: { width: 320, height: 640 },
+    setup: async () => {},
+  },
+  // ---------- The issue list page ----------
+  {
+    name: 'Issue list: all issues',
+    path: 'fel/',
+    setup: async () => {},
+  },
+  {
+    name: 'Issue list: issues shown',
+    path: 'fel/',
+    setup: async (page) => page.click('[aria-controls=issue-list]'),
+  },
+  {
+    name: 'Issue list: dark mode',
+    path: 'fel/',
+    colorScheme: 'dark',
+    setup: async () => {},
+  },
 ];
 
 export async function runAxe() {
@@ -117,13 +228,21 @@ export async function runAxe() {
 
   console.log(`\n=== axe-core ${URL} ===`);
   for (const state of states) {
-    const context = await browser.newContext(state.viewport ? { viewport: state.viewport } : {});
+    const context = await browser.newContext({
+      ...(state.viewport && { viewport: state.viewport }),
+      ...(state.colorScheme && { colorScheme: state.colorScheme }),
+    });
     const page = await context.newPage();
     await page.goto(URL + (state.path ?? ''), { waitUntil: 'networkidle' });
     await state.setup(page);
     await page.waitForTimeout(300);
 
-    const results = await new AxeBuilder({ page }).analyze();
+    const builder = new AxeBuilder({ page });
+    // The accessible version and the issue list must also meet AAA text contrast (7:1)
+    if (/^(Accessible|Issue list)/.test(state.name)) {
+      builder.options({ rules: { 'color-contrast-enhanced': { enabled: true } } });
+    }
+    const results = await builder.analyze();
     totalViolations += results.violations.length;
 
     const status = results.violations.length === 0 ? 'PASS' : 'FAIL';

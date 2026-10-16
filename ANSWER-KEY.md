@@ -1,6 +1,6 @@
 # Answer key – Brew & Bean
 
-> **0 violations in axe-core 4.13 · 100 in Lighthouse 12.8 · at least 35 real accessibility issues**
+> **0 violations in axe-core 4.13 · 100 in Lighthouse 12.8 · at least 37 real accessibility issues**
 
 The site is built to *look* accessible. The code uses `role`, `aria-*`, `<label>`, landmarks and alt text, and it passes automated tests. Yet it is hard or impossible to use with a keyboard, a screen reader, zoom or a screen magnifier.
 
@@ -108,7 +108,7 @@ Each issue describes what the code claims, what actually happens, why the tools 
 **WCAG:** 4.1.3 Status Messages (AA), 2.2.1 Timing Adjustable (A)
 
 - **The code looks fine:** It has `role="status"`, exactly by the book.
-- **What actually happens:** The element with `role="status"` **is rendered at the same time as its text** (`if (!message) return null`). A live region must exist in the DOM *before* its content changes for screen readers to announce it reliably. The toast also disappears after 2.5 seconds, which can be too short for slow readers or people using magnification.
+- **What actually happens:** The element with `role="status"` **is rendered at the same time as its text** (`if (!message) return null`). A live region must exist in the DOM *before* its content changes for screen readers to announce it reliably. The toast also disappears after 3 seconds, which can be too short for slow readers or people using magnification.
 - **Why the tools miss it:** `role="status"` is valid, and axe never sees the change happen.
 - **Note:** The behaviour varies between NVDA and Chrome versions. **Test on your machine before the demo.** If it is announced anyway, you can use that to show how unreliable it is.
 - **Fix:** Always render the live region (empty) and only change its text.
@@ -418,7 +418,7 @@ When Windows High Contrast (Contrast themes) is on, the browser replaces the pag
 **WCAG:** 2.2.1 Timing Adjustable (A)
 
 - **The code looks fine:** A visible countdown, *"Din order reserveras i 3:00"* (Your order is reserved for 3:00), so that items are not sold twice.
-- **What actually happens:** When the time runs out, the cart and everything typed into the form disappear, and you are sent back to the start page. There is no warning beforehand and no way to extend the time. The only message is a toast, *"Sessionen har gått ut"* (The session has expired), that is gone after 2.5 s. It does not say whether a payment went through. The countdown itself is not announced either.
+- **What actually happens:** When the time runs out, the cart and everything typed into the form disappear, and you are sent back to the start page. There is no warning beforehand and no way to extend the time. The only message is a toast, *"Sessionen har gått ut"* (The session has expired), that is gone after 3 s. It does not say whether a payment went through. The countdown itself is not announced either.
 - **Who is affected:** Anyone who is slow: one hand (Elin), switching between devices to approve a payment (Sofia), screen reader users, people who get interrupted (Dani).
 - **Why the tools miss it:** Timing is behaviour over time. axe only sees a snapshot.
 - **Demo:** Open `?tid=30`, add a product, open the cart and start filling in the form slowly.
@@ -433,7 +433,7 @@ When Windows High Contrast (Contrast themes) is on, the browser replaces the pag
   - Step 2 asks you to *"Skanna QR-koden med appen … och godkänn"* without saying what you are approving, to whom or how much. The QR code is only named *"QR-kod"*.
   - After approval a big green box says *"✓ Betalningen är godkänd"* (The payment is approved). It looks like the end, but the next button only says *"Fortsätt"* (Continue).
   - The button that actually sends the order, *"Skicka beställning"*, is in step 3 below a long block of terms.
-  - Afterwards there is no receipt page and no order number, only a toast, *"Tack för ditt köp!"*, for 2.5 s.
+  - Afterwards there is no receipt page and no order number, only a toast, *"Tack för ditt köp!"*, for 3 s.
   - When the step changes, focus is lost (the button you pressed disappears) and nothing is announced.
 - **Who is affected:** Ingrid (*"ett sista steg saknades"*, a final step was missing), Sofia (does not know what she is approving), everyone who is tired or stressed.
 - **Why the tools miss it:** Every element has a name and the right role. Whether the flow is understandable is not something a rule can check.
@@ -470,6 +470,30 @@ When Windows High Contrast (Contrast themes) is on, the browser replaces the pag
 - **Why the tools miss it:** axe's `target-size` rule checks the AA level, 24 × 24 px. Exactly 24 px passes.
 - **Demo:** Open the page on a phone, or in DevTools device mode, and try to tap *"Om oss"* with your thumb.
 - **Fix:** At least 44 × 44 px for touch targets, with space between them.
+
+### 36. Floating labels and no autocomplete in the checkout
+**File:** `FloatField` in [Checkout.jsx](src/components/Checkout.jsx), `.float-field` in [styles.css](src/styles.css)
+**WCAG:** 1.3.5 Identify Input Purpose (AA), 3.3.2 Labels or Instructions (A)
+
+- **The code looks fine:** Every field has a real `<label>` linked with `for`, so screen readers announce it and axe is happy. Floating labels look modern.
+- **What actually happens:**
+  - Before you type, the label sits inside the field and looks like a placeholder. Many people think the field is already filled in, or skip it.
+  - When you type, the label shrinks to 11 px at the top of the field. *"E-post (för OCR och leveransavisering)"* is cut off on narrow screens and when zoomed.
+  - There is no `autocomplete`, so the browser and password managers cannot fill in name, address and e-mail. Everything has to be typed by hand, which is slow with one hand (Elin) and tiring with dyslexia or long COVID (Dani).
+  - The order summary is on the left and the form on the right, so with magnification you may miss one of them (see issue 20).
+- **Why the tools miss it:** axe only checks that `autocomplete` values are *valid* when they are there, not that they are missing. The labels exist and have enough contrast.
+- **Demo:** Open the checkout and ask: *"Which fields are already filled in?"* Then type in the e-mail field and zoom to 200 %.
+- **Fix:** Put the label above the field in normal size, and add `autocomplete="name"`, `"street-address"`, `"postal-code"`, `"address-level2"` and `"email"`.
+
+### 37. Confetti that ignores "reduce motion"
+**File:** [Toast.jsx](src/components/Toast.jsx), `.confetti` in [styles.css](src/styles.css)
+**WCAG:** 2.3.3 Animation from Interactions (AAA). Related to 2.2.2 Pause, Stop, Hide (A), which this short animation passes.
+
+- **The code looks fine:** The confetti is `aria-hidden` and `pointer-events: none`, so it does not disturb screen readers or clicks.
+- **What actually happens:** Every time you add something to the cart, 28 pieces of confetti burst across the screen, even when the user has turned on *Reduce motion* (Windows: *Settings → Accessibility → Visual effects → Animation effects*; macOS and iOS: *Reduce motion*). Movement across the screen can cause dizziness and nausea for people with vestibular disorders, and it pulls attention away for people who find it hard to concentrate (Dani). The toast itself only says *"Tillagd i varukorgen"* (Added to cart), not which product (issue 5).
+- **Why the tools miss it:** Tools do not run animations or check `prefers-reduced-motion`.
+- **Demo:** Turn on reduced motion in the operating system, or in Chrome DevTools: *Rendering → Emulate CSS media feature prefers-reduced-motion: reduce*. Add a product to the cart.
+- **Fix:** Wrap the animation in `@media (prefers-reduced-motion: no-preference)`, or leave it out. Say which product was added.
 
 ### Bonus: "Klicka här" in the footer
 **WCAG:** 2.4.9 Link Purpose (Link Only) (AAA). 2.4.4 (A) **passes**, because the surrounding sentence provides enough context.
@@ -514,6 +538,8 @@ This is a good example of nuance: technically level A is met, but NVDA's links l
 | Different names for the same thing (33) | ✅ | ⚠️ | ⚠️ |
 | Drag-only slider (34) | ✅ | ❌ | ❌ |
 | Compact mobile menu (35) | ✅ | – | – |
+| Floating labels, no autocomplete (36) | ✅ | ⚠️ | – |
+| Confetti ignores reduced motion (37) | ✅ | – | – |
 
 **Takeaways:**
 1. **ARIA is a promise, not a feature.** `aria-expanded`, `role="button"` and `aria-modal` *describe* behaviour. You still have to *build* the behaviour.

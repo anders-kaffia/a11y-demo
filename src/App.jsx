@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import VersionSwitch from './shared/VersionSwitch.jsx';
 import BotProtection from './components/BotProtection.jsx';
 import Header from './components/Header.jsx';
 import InfoBanner from './components/InfoBanner.jsx';
@@ -16,6 +17,7 @@ const isSearchPage = /\/sok\/?$/.test(window.location.pathname);
 export default function App() {
   const [cart, setCart] = useState([]);
   const [toast, setToast] = useState(null);
+  const toastTimer = useRef(null);
   const [showNewsletter, setShowNewsletter] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
 
@@ -33,10 +35,12 @@ export default function App() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const notify = useCallback((message) => {
-    setToast(message);
-    // A11Y-ISSUE #5: 2.5 seconds is too short to read the message.
-    setTimeout(() => setToast(null), 2500);
+  const notify = useCallback((message, options = {}) => {
+    // A new id restarts the confetti animation even when the text is the same
+    setToast({ message, confetti: options.confetti ?? false, id: Date.now() });
+    // A11Y-ISSUE #5: 3 seconds is too short to read the message.
+    clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 3000);
   }, []);
 
   const openCheckout = () => {
@@ -71,11 +75,14 @@ export default function App() {
       return;
     }
     setCart((items) => [...items, product]);
-    notify(`${product.name} har lagts i varukorgen`);
+    // A11Y-ISSUE #5: The message does not say which product was added.
+    notify('Tillagd i varukorgen', { confetti: true });
   };
 
   return (
     <>
+      {/* Demo helper, not part of the shop: switches to the accessible version */}
+      <VersionSwitch />
       <InfoBanner />
       <Header cartCount={cart.length} showSearch={!isSearchPage} onCartClick={openCheckout} />
 
@@ -146,7 +153,7 @@ export default function App() {
         />
       )}
 
-      <Toast message={toast} />
+      <Toast toast={toast} />
     </>
   );
 }

@@ -526,6 +526,30 @@ main { max-width: 1680px; margin: 0 auto; padding: 0 32px 64px; }
   box-shadow: 0 8px 24px rgb(0 0 0 / 0.25);
 }
 
+/* A11Y-ISSUE #37: No @media (prefers-reduced-motion) – the confetti always moves. */
+.confetti {
+  position: fixed;
+  bottom: 48px;
+  left: 50%;
+  z-index: 199;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.confetti span {
+  position: absolute;
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: confetti-burst 1.3s cubic-bezier(0.2, 0.6, 0.4, 1) forwards;
+}
+@keyframes confetti-burst {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0); }
+  40% { opacity: 1; transform: translate(calc(var(--x) * 0.6), calc(var(--up) * -1)) rotate(calc(var(--r) * 0.5)); }
+  100% { opacity: 0; transform: translate(var(--x), 140px) rotate(var(--r)); }
+}
+
 /* ---------- Footer ---------- */
 .site-footer {
   padding: 32px;
@@ -538,7 +562,7 @@ main { max-width: 1680px; margin: 0 auto; padding: 0 32px 64px; }
 .site-footer a { color: var(--brand); }
 
 /* ---------- Checkout ---------- */
-.checkout { max-width: 640px; padding-top: 32px; }
+.checkout { padding-top: 32px; }
 .checkout h1 { font-size: 36px; margin: 16px 0 4px; }
 .checkout-timer { margin: 0; font-weight: 700; color: var(--sale); }
 .checkout-steps { margin: 0 0 16px; color: var(--muted); }
@@ -552,7 +576,33 @@ main { max-width: 1680px; margin: 0 auto; padding: 0 32px 64px; }
   border-radius: 8px;
 }
 .checkout-row { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; }
-.checkout-row > div { display: grid; gap: 8px; }
+.checkout-columns { grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 32px 120px; align-items: start; }
+.checkout-column { display: grid; gap: 8px; }
+.checkout-columns .grind-track { margin-right: 12px; }
+
+/* A11Y-ISSUE #36: Floating labels – the label looks like a placeholder, then shrinks to 11 px and is cut off. */
+.float-field { position: relative; }
+.checkout-form .float-field input { width: 100%; padding: 22px 13px 6px; }
+.checkout-form .float-field label {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  right: 15px;
+  overflow: hidden;
+  font-weight: 400;
+  color: var(--muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transform: translateY(-50%);
+  transition: all 0.15s;
+  pointer-events: none;
+}
+.checkout-form .float-field input:focus + label,
+.checkout-form .float-field input:not(:placeholder-shown) + label {
+  top: 5px;
+  font-size: 11px;
+  transform: none;
+}
 .checkout-lines { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }
 .checkout-lines li {
   display: flex;
