@@ -1,6 +1,6 @@
 # Brew & Bean – 100 % in the tests, still inaccessible
 
-An AI-generated demo web shop that scores **0 violations in axe-core** and **100 in Lighthouse accessibility**, yet has **at least 30 serious accessibility issues**.
+An AI-generated demo web shop that scores **0 violations in axe-core** and **100 in Lighthouse accessibility**, yet has **at least 35 serious accessibility issues**.
 
 **Live demo:** https://anders-kaffia.github.io/a11y-demo/
 
@@ -23,9 +23,9 @@ The issues are deliberate, but none of them is exotic. They are patterns found o
 
 | Tool | Result |
 |---|---|
-| axe-core 4.13 (all rules incl. best practices, 11 UI states) | **0 violations** |
+| axe-core 4.13 (all rules incl. best practices, 15 UI states) | **0 violations** |
 | Lighthouse 12.8 – Accessibility (start page and search page) | **100** |
-| Keyboard, screen reader (NVDA), zoom, magnifier, forced colours | **30+ issues** |
+| Keyboard, screen reader (NVDA), zoom, magnifier, forced colours | **35+ issues** |
 
 Some issues show up in axe only as *needs review*, for example text on a background image. They do not count as violations, so the score stays at 0 violations and 100 points.
 
@@ -65,8 +65,13 @@ Each issue is marked in the code with a comment starting with `A11Y-ISSUE #n`. S
 | 28 | Stock status shown by colour alone | 1.4.1 |
 | 29 | Hover-only tooltips that vanish when you move towards them | 1.4.13, 2.1.1 |
 | 30 | Breaks in Windows High Contrast (forced colours) | 1.4.1, 1.4.11, 2.4.7 |
+| 31 | Checkout reservation runs out without warning and throws away what you filled in | 2.2.1 |
+| 32 | "Betalningen är godkänd" looks like the end, but the order is not sent, and there is no receipt | 3.3.2, 3.3.4, 4.1.3 |
+| 33 | The same thing has different names: Varukorg / Kundvagn / Din order, Prenumerationer / kaffeabonnemang | 3.2.4 |
+| 34 | Grind slider can only be dragged: no click, no arrow keys | 2.5.7, 2.1.1 |
+| 35 | Compact mobile menu with 24 px targets and no space between them | 2.5.5* |
 
-\* Technically passes, because browser zoom still works. It is included as an example of the gap between conformance and usability.
+\* #22: Technically passes, because browser zoom still works. #35: Passes 2.5.8 (AA, 24 px) but fails 2.5.5 (AAA, 44 px). It is included as an example of the gap between conformance and usability.
 
 A detailed answer key, with how to demonstrate each issue, why the tools miss it and how to fix it, is in [ANSWER-KEY.md](ANSWER-KEY.md). It also includes a suggested running order for a live demo and the NVDA commands you need.
 
@@ -82,7 +87,7 @@ Requires Node.js 18 or later.
 npm install
 npx playwright install chromium   # first time only, used by the test scripts
 npm run dev                       # start the site at http://localhost:5173
-npm run test:a11y                 # build, then run axe-core (11 UI states) and Lighthouse
+npm run test:a11y                 # build, then run axe-core (15 UI states) and Lighthouse
 ```
 
 The site has two pages: the start page (`/`) and the search page (`/sok`, for example `/sok?q=kaffe`).

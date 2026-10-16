@@ -5,6 +5,14 @@ import { pathToFileURL } from 'node:url';
 
 const URL = process.env.SITE_URL ?? 'http://localhost:4173/';
 
+// Adding a product scrolls the page, which opens the newsletter dialog – close it first
+async function openCheckoutWithItem(page) {
+  await page.click('.card-add >> nth=2');
+  await page.waitForTimeout(300);
+  if (await page.isVisible('.dialog-close')) await page.click('.dialog-close');
+  await page.click('.cart');
+}
+
 const states = [
   {
     name: 'Initial page load',
@@ -41,8 +49,38 @@ const states = [
     },
   },
   {
-    name: 'Info banner closed',
-    setup: async (page) => page.click('.info-banner-close'),
+    name: 'Mobile layout (compact menu)',
+    viewport: { width: 390, height: 844 },
+    setup: async () => {},
+  },
+  {
+    name: 'Checkout, empty cart',
+    setup: async (page) => page.click('.cart'),
+  },
+  {
+    name: 'Checkout step 1 (order and delivery)',
+    setup: async (page) => {
+      await openCheckoutWithItem(page);
+      await page.waitForSelector('.checkout-form');
+    },
+  },
+  {
+    name: 'Checkout step 2 (payment approved)',
+    setup: async (page) => {
+      await openCheckoutWithItem(page);
+      await page.click('.checkout-form button[type=submit]');
+      await page.click('.checkout .secondary');
+    },
+  },
+  {
+    name: 'Checkout step 3 (review and send)',
+    setup: async (page) => {
+      await openCheckoutWithItem(page);
+      await page.click('.checkout-form button[type=submit]');
+      await page.click('.checkout .secondary');
+      await page.click('.checkout .primary');
+      await page.check('#co-terms');
+    },
   },
   {
     name: 'Toast visible after "Add to cart"',
@@ -79,7 +117,7 @@ export async function runAxe() {
 
   console.log(`\n=== axe-core ${URL} ===`);
   for (const state of states) {
-    const context = await browser.newContext();
+    const context = await browser.newContext(state.viewport ? { viewport: state.viewport } : {});
     const page = await context.newPage();
     await page.goto(URL + (state.path ?? ''), { waitUntil: 'networkidle' });
     await state.setup(page);

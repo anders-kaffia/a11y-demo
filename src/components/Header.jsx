@@ -18,7 +18,7 @@ const CartIcon = () => (
   </svg>
 );
 
-export default function Header({ cartCount, showSearch }) {
+export default function Header({ cartCount, showSearch, onCartClick }) {
   const [shopOpen, setShopOpen] = useState(false);
 
   return (
@@ -71,7 +71,7 @@ export default function Header({ cartCount, showSearch }) {
         </form>
       )}
 
-      <button type="button" className="cart">
+      <button type="button" className="cart" onClick={onCartClick}>
         <CartIcon />
         <span>Varukorg</span>
         {/* Hidden from screen readers: "left paren two right paren" sounds awful */}

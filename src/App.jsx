@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import BotProtection from './components/BotProtection.jsx';
 import Header from './components/Header.jsx';
 import InfoBanner from './components/InfoBanner.jsx';
@@ -8,6 +8,7 @@ import Toast from './components/Toast.jsx';
 import Footer from './components/Footer.jsx';
 import Search from './components/Search.jsx';
 import PurchaseInfo from './components/PurchaseInfo.jsx';
+import Checkout from './components/Checkout.jsx';
 import { products } from './products.js';
 
 const isSearchPage = /\/sok\/?$/.test(window.location.pathname);
@@ -16,6 +17,7 @@ export default function App() {
   const [cart, setCart] = useState([]);
   const [toast, setToast] = useState(null);
   const [showNewsletter, setShowNewsletter] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
 
   // Show the newsletter offer once the visitor has scrolled a bit and shown interest
   // A11Y-ISSUE #3: The dialog opens unprompted while scrolling/tabbing, and focus is not moved to it.
@@ -31,10 +33,35 @@ export default function App() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const notify = (message) => {
+  const notify = useCallback((message) => {
     setToast(message);
     // A11Y-ISSUE #5: 2.5 seconds is too short to read the message.
     setTimeout(() => setToast(null), 2500);
+  }, []);
+
+  const openCheckout = () => {
+    setShowCheckout(true);
+    window.scrollTo(0, 0);
+  };
+
+  const closeCheckout = () => {
+    setShowCheckout(false);
+    window.scrollTo(0, 0);
+  };
+
+  // A11Y-ISSUE #31: When the reservation runs out, the cart and the form are emptied silently.
+  const expireCheckout = useCallback(() => {
+    setCart([]);
+    setShowCheckout(false);
+    notify('Sessionen har gått ut');
+  }, [notify]);
+
+  // A11Y-ISSUE #32: No receipt page and no order number – just a toast that disappears.
+  const completeCheckout = () => {
+    setCart([]);
+    setShowCheckout(false);
+    window.scrollTo(0, 0);
+    notify('Tack för ditt köp!');
   };
 
   const addToCart = (product) => {
@@ -50,10 +77,27 @@ export default function App() {
   return (
     <>
       <InfoBanner />
-      <Header cartCount={cart.length} showSearch={!isSearchPage} />
+      <Header cartCount={cart.length} showSearch={!isSearchPage} onCartClick={openCheckout} />
 
       <main id="main">
-        {isSearchPage ? (
+        {showCheckout ? (
+          cart.length > 0 ? (
+            <Checkout
+              cart={cart}
+              onBack={closeCheckout}
+              onExpire={expireCheckout}
+              onComplete={completeCheckout}
+            />
+          ) : (
+            <section className="checkout" aria-labelledby="checkout-title">
+              <h1 id="checkout-title">Kundvagn</h1>
+              <p>Kundvagnen är tom.</p>
+              <button type="button" className="primary" onClick={closeCheckout}>
+                Fortsätt handla
+              </button>
+            </section>
+          )
+        ) : isSearchPage ? (
           <Search />
         ) : (
           <>

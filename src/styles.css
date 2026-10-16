@@ -49,15 +49,7 @@ h2 { font-size: 24px; }
 }
 .info-banner p { max-width: 1400px; margin: 0 0 8px; }
 .info-banner a { color: #fff; }
-.info-banner-close {
-  padding: 6px 16px;
-  font: inherit;
-  color: #2b2118;
-  background: #fff;
-  border: 0;
-  border-radius: 6px;
-  cursor: pointer;
-}
+.info-banner p:last-child { margin-bottom: 0; }
 
 /* ---------- Header & menu ---------- */
 /* A11Y-ISSUE #20: Large gaps between the menu, the search field and the cart. */
@@ -125,6 +117,15 @@ h2 { font-size: 24px; }
 
 /* A11Y-ISSUE #2: The submenu is only shown on hover – not when the button is "expanded". */
 .has-submenu:hover .submenu { display: block; }
+
+/* Compact menu on small screens */
+/* A11Y-ISSUE #35: The menu items are squeezed together – 24 px high with no space between them.
+   That just passes WCAG 2.5.8 (AA), but it is hard to hit the right one with a finger or a shaky hand. */
+@media (max-width: 700px) {
+  .menu { gap: 0; }
+  .menu a,
+  .menu button { min-height: 24px; padding: 2px 5px; font-size: 13px; line-height: 20px; border-radius: 0; }
+}
 
 .cart {
   margin-left: auto;
@@ -535,3 +536,83 @@ main { max-width: 1680px; margin: 0 auto; padding: 0 32px 64px; }
 }
 .site-footer p { margin: 10px 0; }
 .site-footer a { color: var(--brand); }
+
+/* ---------- Checkout ---------- */
+.checkout { max-width: 640px; padding-top: 32px; }
+.checkout h1 { font-size: 36px; margin: 16px 0 4px; }
+.checkout-timer { margin: 0; font-weight: 700; color: var(--sale); }
+.checkout-steps { margin: 0 0 16px; color: var(--muted); }
+.checkout-form { display: grid; gap: 8px; }
+.checkout-form h2 { margin: 24px 0 4px; }
+.checkout-form label { font-weight: 600; }
+.checkout-form input:not([type='checkbox']) {
+  padding: 10px 13px;
+  font: inherit;
+  border: 2px solid #8a8079;
+  border-radius: 8px;
+}
+.checkout-row { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; }
+.checkout-row > div { display: grid; gap: 8px; }
+.checkout-lines { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }
+.checkout-lines li {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.checkout-total { margin: 0; font-weight: 700; }
+.checkout-paid {
+  margin: 8px 0;
+  padding: 16px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  background: #1e6b34;
+  border-radius: 10px;
+}
+.checkout-terms { color: var(--muted); }
+.primary:disabled { cursor: not-allowed; opacity: 0.6; }
+.secondary {
+  justify-self: start;
+  padding: 10px 16px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--brand);
+  background: var(--surface);
+  border: 2px solid var(--brand);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.link-button {
+  padding: 0;
+  font: inherit;
+  color: var(--brand);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.qr { display: block; margin: 8px 0; border: 1px solid var(--border); }
+
+/* A11Y-ISSUE #34: Drag-only slider – the thumb is small and the track ignores clicks. */
+.grind { margin-top: 16px; }
+.grind-label { display: block; font-weight: 600; }
+.grind-track {
+  position: relative;
+  height: 6px;
+  margin: 18px 12px;
+  background: var(--border);
+  border-radius: 3px;
+}
+.grind-thumb {
+  position: absolute;
+  top: 50%;
+  width: 24px;
+  height: 24px;
+  background: var(--brand);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  touch-action: none;
+}
+.grind-value { color: var(--muted); }

@@ -1,6 +1,6 @@
 # Answer key – Brew & Bean
 
-> **0 violations in axe-core 4.13 · 100 in Lighthouse 12.8 · at least 30 real accessibility issues**
+> **0 violations in axe-core 4.13 · 100 in Lighthouse 12.8 · at least 35 real accessibility issues**
 
 The site is built to *look* accessible. The code uses `role`, `aria-*`, `<label>`, landmarks and alt text, and it passes automated tests. Yet it is hard or impossible to use with a keyboard, a screen reader, zoom or a screen magnifier.
 
@@ -18,12 +18,12 @@ The easiest option is the live version at https://anders-kaffia.github.io/a11y-d
 npm install
 npx playwright install chromium   # first time only
 npm run dev                       # http://localhost:5173 – show the site
-npm run test:a11y                 # build, then run axe (11 UI states) and Lighthouse
+npm run test:a11y                 # build, then run axe (15 UI states) and Lighthouse
 ```
 
 You can also run Lighthouse directly in Chrome DevTools (the Lighthouse tab, *Accessibility* category) or use the axe DevTools extension. Both come out green.
 
-**Tip:** Reload the page (F5) before each part of the demo. Focus lands on the hidden checkbox. The newsletter dialog appears once you have scrolled about 300 px, roughly when the products come into view. Search has its own page, `/sok`. You reach it from the search field in the header, or directly via `/sok?q=kaffe`.
+**Tip:** Reload the page (F5) before each part of the demo. Focus lands on the hidden checkbox. The newsletter dialog appears once you have scrolled about 300 px, roughly when the products come into view. Click *"Varukorg"* (cart) to open the checkout. Add `?tid=30` to the URL to shorten the checkout reservation from 3 minutes to 30 seconds. Search has its own page, `/sok`. You reach it from the search field in the header, or directly via `/sok?q=kaffe`.
 
 ## Comments in the code
 
@@ -240,7 +240,7 @@ Each issue describes what the code claims, what actually happens, why the tools 
 **File:** [InfoBanner.jsx](src/components/InfoBanner.jsx), `.info-banner` in [styles.css](src/styles.css)
 **WCAG:** 1.4.10 Reflow (AA), 2.4.11 Focus Not Obscured (Minimum) (AA, WCAG 2.2), 1.3.4 Orientation (AA)
 
-- **The code looks fine:** The banner is an `<aside>` with an `aria-label` and has a real `<button>` to close it. The landmark is called *"Banner information"*, though, which says nothing about the content, and the link is only called *"Läs mer"* (see issue 23).
+- **The code looks fine:** The banner is an `<aside>` with an `aria-label` and is sticky so that the important information is always visible. There is no way to close it. The landmark is called *"Banner information"*, though, which says nothing about the content, and the link is only called *"Läs mer"* (see issue 23).
 - **What actually happens:**
   - The banner has `position: sticky` and lots of text. On a phone in landscape it covers almost the whole screen: about 94 % of the height on an iPhone 13 and 82 % on a Pixel 7. The rest of the page scrolls past in a gap a few pixels high.
   - Someone who cannot rotate their phone (because it is mounted on a wheelchair, for example) effectively cannot use the site.
@@ -248,7 +248,7 @@ Each issue describes what the code claims, what actually happens, why the tools 
   - When zoomed, the banner grows with the text and takes up an ever larger part of the screen.
 - **Why the tools miss it:** axe and Lighthouse do not check how much of the screen a fixed element takes up, or whether focus ends up behind it. axe only reports *needs review* for contrast, because text sits on top of other text.
 - **Demo:** Open DevTools, choose device mode and a phone, and rotate to landscape. Scroll. Then tab through the product cards in a normal desktop view and show focus disappearing under the banner.
-- **Fix:** Let the banner scroll with the page, and make it short and easy to close. If something has to be fixed, keep it small and turn off `sticky` on short viewports (`@media (max-height: 500px)`). Use `scroll-padding-top` so focused elements do not end up behind it.
+- **Fix:** Let the banner scroll with the page, and make it short and possible to close. If something has to be fixed, keep it small and turn off `sticky` on short viewports (`@media (max-height: 500px)`). Use `scroll-padding-top` so focused elements do not end up behind it.
 
 ### 20. Lots of space between interactive elements
 **File:** [styles.css](src/styles.css) (`main`, `.site-header`, `.menu`, `.search-bar`, `.search-filters`, `.grid`)
@@ -413,6 +413,64 @@ When Windows High Contrast (Contrast themes) is on, the browser replaces the pag
   - Only use `forced-color-adjust: none` when you know exactly why.
   - Test with `@media (forced-colors: active)`.
 
+### 31. The checkout reservation runs out without warning
+**File:** [Checkout.jsx](src/components/Checkout.jsx), `expireCheckout` in [App.jsx](src/App.jsx)
+**WCAG:** 2.2.1 Timing Adjustable (A)
+
+- **The code looks fine:** A visible countdown, *"Din order reserveras i 3:00"* (Your order is reserved for 3:00), so that items are not sold twice.
+- **What actually happens:** When the time runs out, the cart and everything typed into the form disappear, and you are sent back to the start page. There is no warning beforehand and no way to extend the time. The only message is a toast, *"Sessionen har gått ut"* (The session has expired), that is gone after 2.5 s. It does not say whether a payment went through. The countdown itself is not announced either.
+- **Who is affected:** Anyone who is slow: one hand (Elin), switching between devices to approve a payment (Sofia), screen reader users, people who get interrupted (Dani).
+- **Why the tools miss it:** Timing is behaviour over time. axe only sees a snapshot.
+- **Demo:** Open `?tid=30`, add a product, open the cart and start filling in the form slowly.
+- **Fix:** Warn at least 20 seconds before the time runs out and let the user extend with a single action. Better: no time limit, or keep the data so the user can continue.
+
+### 32. "Betalningen är godkänd", but the order is not sent
+**File:** [Checkout.jsx](src/components/Checkout.jsx)
+**WCAG:** 3.3.2 Labels or Instructions (A), 3.3.4 Error Prevention (Legal, Financial, Data) (AA), 4.1.3 Status Messages (AA), 2.4.3 Focus Order (A)
+
+- **The code looks fine:** Three steps, a heading per step, *"Steg 2 av 3"*, a review step and a checkbox for the terms.
+- **What actually happens:**
+  - Step 2 asks you to *"Skanna QR-koden med appen … och godkänn"* without saying what you are approving, to whom or how much. The QR code is only named *"QR-kod"*.
+  - After approval a big green box says *"✓ Betalningen är godkänd"* (The payment is approved). It looks like the end, but the next button only says *"Fortsätt"* (Continue).
+  - The button that actually sends the order, *"Skicka beställning"*, is in step 3 below a long block of terms.
+  - Afterwards there is no receipt page and no order number, only a toast, *"Tack för ditt köp!"*, for 2.5 s.
+  - When the step changes, focus is lost (the button you pressed disappears) and nothing is announced.
+- **Who is affected:** Ingrid (*"ett sista steg saknades"*, a final step was missing), Sofia (does not know what she is approving), everyone who is tired or stressed.
+- **Why the tools miss it:** Every element has a name and the right role. Whether the flow is understandable is not something a rule can check.
+- **Demo:** Go through the checkout and stop at the green box. Ask: *"Is the order sent now?"*
+- **Fix:** Say exactly what is approved (shop, amount). Only show success when the whole order is done, and show a receipt page with an order number. Move focus to the heading of each new step.
+
+### 33. The same thing has different names
+**Files:** [Header.jsx](src/components/Header.jsx), [Checkout.jsx](src/components/Checkout.jsx), [InfoBanner.jsx](src/components/InfoBanner.jsx)
+**WCAG:** 3.2.4 Consistent Identification (AA)
+
+- **What actually happens:** The header says *"Varukorg"* (basket), the checkout heading says *"Kundvagn"* (shopping cart), step 1 says *"Din order"* (your order) and the final button *"Skicka beställning"* (send order). The menu says *"Prenumerationer"* (subscriptions), the banner *"kaffeabonnemang"* (coffee plans).
+- **Who is affected:** People reading in a second language (Ahmed), people with cognitive disabilities (Dani). *"Is a kundvagn the same as a varukorg?"*
+- **Why the tools miss it:** Tools do not understand meaning.
+- **Demo:** Ask the audience to find every name for the cart on the page.
+- **Fix:** Decide on one word per concept and use it everywhere: in the code, the texts and the support material.
+
+### 34. Grind slider that can only be dragged
+**File:** `GrindSlider` in [Checkout.jsx](src/components/Checkout.jsx)
+**WCAG:** 2.5.7 Dragging Movements (AA, WCAG 2.2), 2.1.1 Keyboard (A)
+
+- **The code looks fine:** `role="slider"`, `tabIndex`, a label, `aria-valuemin/max/now` and `aria-valuetext`. NVDA reads *"Malning, slider, Hela bönor"*.
+- **What actually happens:** The value only changes when you drag the 24 px thumb. Clicking the track does nothing, and the arrow keys do nothing even though the thumb gets focus.
+- **Who is affected:** One hand or a shaky hand (Elin, Ingrid), keyboard and screen reader users (Sofia).
+- **Why the tools miss it:** The ARIA attributes are all there. Tools do not try to press the arrow keys.
+- **Demo:** Tab to the slider and press →. Then try to click to the right of the thumb.
+- **Fix:** Use `<input type="range">` or radio buttons. A custom slider needs arrow keys, Home/End and clicks on the track.
+
+### 35. Compact menu on mobile
+**File:** `.menu` in [styles.css](src/styles.css)
+**WCAG:** 2.5.5 Target Size (Enhanced) (AAA). 2.5.8 Target Size (Minimum) (AA) **passes**.
+
+- **What actually happens:** Below 700 px the menu items are 24 px high, in 13 px text, with no space between them, while the rest of the header has lots of space (issue 20).
+- **Who is affected:** Shaky hands (Ingrid), the wrong hand (Elin), anyone using the phone on the move.
+- **Why the tools miss it:** axe's `target-size` rule checks the AA level, 24 × 24 px. Exactly 24 px passes.
+- **Demo:** Open the page on a phone, or in DevTools device mode, and try to tap *"Om oss"* with your thumb.
+- **Fix:** At least 44 × 44 px for touch targets, with space between them.
+
 ### Bonus: "Klicka här" in the footer
 **WCAG:** 2.4.9 Link Purpose (Link Only) (AAA). 2.4.4 (A) **passes**, because the surrounding sentence provides enough context.
 
@@ -451,6 +509,11 @@ This is a good example of nuance: technically level A is met, but NVDA's links l
 | Stock status by colour (28) | ✅ | – | ❌ |
 | Hover-only tooltips (29) | ✅ | ❌ | ❌ |
 | Windows High Contrast (30) | ✅ | ❌ | – |
+| Checkout time limit (31) | ✅ | ❌ | ❌ |
+| "Payment approved" and no receipt (32) | ✅ | ⚠️ | ❌ |
+| Different names for the same thing (33) | ✅ | ⚠️ | ⚠️ |
+| Drag-only slider (34) | ✅ | ❌ | ❌ |
+| Compact mobile menu (35) | ✅ | – | – |
 
 **Takeaways:**
 1. **ARIA is a promise, not a feature.** `aria-expanded`, `role="button"` and `aria-modal` *describe* behaviour. You still have to *build* the behaviour.
