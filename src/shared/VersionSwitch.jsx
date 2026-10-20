@@ -14,7 +14,7 @@ export default function VersionSwitch() {
   const pages = {
     broken: { href: base + searchPart, name: 'versionen med brister', link: 'Versionen med brister' },
     accessible: { href: `${base}tillganglig/${searchPart}`, name: 'den tillgängliga versionen', link: 'Den tillgängliga versionen' },
-    errors: { href: `${base}fel/`, name: 'listan med alla fel', link: 'Alla fel och hur du hittar dem' },
+    errors: { href: `${base}fel/`, name: 'listan med kända fel', link: 'Kända fel och hur du hittar dem' },
   };
 
   return (

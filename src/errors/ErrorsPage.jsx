@@ -95,21 +95,22 @@ export default function ErrorsPage() {
       </header>
 
       <main id="main" tabIndex={-1} className="errors">
-        <h1>Alla fel på demosidan och hur du hittar dem</h1>
+        <h1>Exempel på brister på demosidan och hur du hittar dem</h1>
         <div className="summary-box">
           <p>
-            <a href={base}>Versionen med brister</a> får 0 fel i axe och 100 poäng i Lighthouse. Ändå
-            finns det minst 37 fel som gör sidan svår eller omöjlig att använda.
+            <a href={base}>Versionen med brister</a> får 0 brister i axe och 100 poäng i Lighthouse. Ändå
+            finns det minst 37 brister som gör sidan svår eller omöjlig att använda. Här listar vi de brister vi
+            känner till. Det kan finnas fler som vi inte har hittat.
           </p>
           <p>
-            Automatiska verktyg hittar bara en del av felen. Resten hittar du genom att testa själv.{' '}
+            Automatiska verktyg hittar bara en del av bristerna. Resten hittar du genom att testa själv.{' '}
             <a href={`${base}tillganglig/`}>Den tillgängliga versionen</a> visar hur sidan kan se ut när
-            felen är rättade.
+            bristerna är rättade.
           </p>
         </div>
 
         <section aria-labelledby="methods-title">
-          <h2 id="methods-title">Så hittar du felen</h2>
+          <h2 id="methods-title">Så hittar du brister</h2>
           <div className="method-grid">
             {methods.map((m) => (
               <section key={m.name} className="method" aria-labelledby={`method-${m.name}`}>
@@ -125,8 +126,8 @@ export default function ErrorsPage() {
         </section>
 
         <section aria-labelledby="issues-title">
-          <h2 id="issues-title">Felen</h2>
-          <p>Försök gärna hitta felen själv innan du visar listan.</p>
+          <h2 id="issues-title">Brister</h2>
+          <p>Försök gärna hitta bristerna själv innan du visar listan.</p>
           <button
             type="button"
             className="primary"
@@ -134,7 +135,7 @@ export default function ErrorsPage() {
             aria-controls="issue-list"
             onClick={() => setShowIssues(!showIssues)}
           >
-            {showIssues ? 'Dölj felen' : 'Visa alla fel'}
+            {showIssues ? 'Dölj bristerna' : 'Visa bristerna'}
           </button>
 
           <ol className="issue-list" id="issue-list" hidden={!showIssues}>
