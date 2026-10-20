@@ -204,7 +204,8 @@ main { max-width: 1680px; margin: 0 auto; padding: 0 32px 64px; }
   color: var(--muted);
 }
 .stock-legend .stock-dot:not(:first-child) { margin-left: 14px; }
-/* A11Y-ISSUE #28: Information conveyed by colour alone (green/orange/red).
+/* A11Y-ISSUE #28: Information conveyed by colour alone (green/ochre/red). The shades are picked so they
+   look almost the same with red-green colour blindness (protanopia and deuteranopia).
    A11Y-ISSUE #30: Background colour only – the dots disappear in Windows High Contrast. */
 .stock-dot {
   display: inline-block;
@@ -212,9 +213,9 @@ main { max-width: 1680px; margin: 0 auto; padding: 0 32px 64px; }
   height: 12px;
   border-radius: 50%;
 }
-.stock-dot--in { background: #3a9d23; }
-.stock-dot--low { background: #e8a317; }
-.stock-dot--out { background: #d64545; }
+.stock-dot--in { background: #426b2e; }
+.stock-dot--low { background: #86612d; }
+.stock-dot--out { background: #bf4a40; }
 
 .has-tooltip { position: relative; display: inline-flex; align-items: center; }
 .tooltip {
@@ -487,8 +488,9 @@ main { max-width: 1680px; margin: 0 auto; padding: 0 32px 64px; }
   border: 2px solid #8a8079;
   border-radius: 8px;
 }
-/* A11Y-ISSUE #4: The error is shown by colour alone. */
-.dialog input.invalid { border-color: var(--sale); }
+/* A11Y-ISSUE #4: The error is shown by colour alone. The red is as light as the normal grey border, so
+   with red-green colour blindness there is no visible difference. */
+.dialog input.invalid { border-color: #b4646b; }
 
 .primary {
   margin-top: 8px;

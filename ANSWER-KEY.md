@@ -99,7 +99,7 @@ Each issue describes what the code claims, what actually happens, why the tools 
 **File:** [NewsletterDialog.jsx](src/components/NewsletterDialog.jsx), `.invalid` in [styles.css](src/styles.css)
 **WCAG:** 3.3.1 Error Identification (A), 1.4.1 Use of Color (A)
 
-- **What actually happens:** If you type "abc" and press *"Prenumerera"* (Subscribe), the border turns red. There is no text, no `aria-invalid`, no `aria-describedby` and nothing is announced. NVDA says nothing at all, and someone who is colour blind may not see any difference.
+- **What actually happens:** If you type "abc" and press *"Prenumerera"* (Subscribe), the border turns red. The red is picked to be as light as the normal grey border, so with red-green colour blindness (protanopia or deuteranopia) there is no visible difference at all. There is no text, no `aria-invalid`, no `aria-describedby` and nothing is announced. NVDA says nothing at all.
 - **Why the tools miss it:** A field without an error message is not a failure in itself, and axe does not know that an error has occurred.
 - **Fix:** Show an error message in text, connect it with `aria-describedby`, set `aria-invalid="true"` and move focus to the field.
 
@@ -369,11 +369,11 @@ Each issue describes what the code claims, what actually happens, why the tools 
 
 - **The code looks fine:** There is a legend with text: *"● I lager ● Få kvar ● Slut"* (In stock, Few left, Sold out).
 - **What actually happens:**
-  - Each card only has a coloured dot: green, orange or red. With red-green colour blindness, which affects about 8 % of men, green and orange are almost impossible to tell apart. Red blends in with them too.
+  - Each card only has a coloured dot: green, ochre or red. The shades are picked to look almost the same with red-green colour blindness, which affects about 8 % of men. With protanopia, green and ochre are identical, and with deuteranopia all three are hard to tell apart.
   - The legend is at the top, far away from the cards. With magnification, the legend and the dot are never visible at the same time.
   - The dot is an empty `<span>`, so the screen reader says nothing. The stock status only exists in a tooltip (see issue 29).
 - **Why the tools miss it:** An empty element without text is not a failure. The tools do not know that the colour means something.
-- **Demo:** Open DevTools and choose *Rendering → Emulate vision deficiencies → Deuteranopia*. Ask the audience which coffees are in stock.
+- **Demo:** Open DevTools and choose *Rendering → Emulate vision deficiencies → Protanopia* (or *Deuteranopia*). Ask the audience which coffees are in stock.
 - **Fix:** Write the status in text, for example *"Få kvar"* (Few left). Add an icon with a different shape for each status if you like.
 
 ### 29. Tooltips that only appear on mouse hover
