@@ -1,0 +1,25 @@
+/* QR page: shown on a projector, so everything is large and centred */
+.qr-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
+.qr-page h1 { margin: 0; font-size: clamp(1.75rem, 5vw, 3.5rem); }
+.qr-code {
+  /* As large as the screen allows while the heading and the address still fit */
+  width: min(90vw, 100vh - 16rem);
+  width: min(90vw, 100dvh - 16rem);
+  min-width: 12rem;
+  aspect-ratio: 1;
+  background: #ffffff;
+  border-radius: 0.75rem;
+}
+.qr-code svg { display: block; width: 100%; height: 100%; }
+.qr-url { margin: 0; font-size: clamp(1.25rem, 3.5vw, 2.25rem); font-weight: 700; overflow-wrap: anywhere; }
+.qr-url a { color: var(--text); }

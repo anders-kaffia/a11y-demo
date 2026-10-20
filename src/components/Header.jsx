@@ -54,6 +54,7 @@ export default function Header({ cartCount, showSearch, onCartClick }) {
           <li><a href="#main">Prenumerationer</a></li>
           <li><a href="#main">Om oss</a></li>
           <li><a href="#main">Kontakt</a></li>
+          <li><a href={`${import.meta.env.BASE_URL}qr/`}>QR-kod</a></li>
         </ul>
       </nav>
 

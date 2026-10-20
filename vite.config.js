@@ -36,6 +36,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         accessible: resolve(__dirname, 'tillganglig/index.html'),
         errors: resolve(__dirname, 'fel/index.html'),
+        qr: resolve(__dirname, 'qr/index.html'),
       },
     },
   },
