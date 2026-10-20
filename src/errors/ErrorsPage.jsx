@@ -68,7 +68,7 @@ const methods = [
   {
     name: 'Verktyg',
     tips: [
-      'axe DevTools, Lighthouse och WAVE hittar en del fel. På den här sidan hittar de inga alls.',
+      'axe DevTools, Lighthouse och WAVE hittar en del brister. På den här sidan hittar de inga alls.',
       'Använd verktygen som en första kontroll, aldrig som bevis på att något är tillgängligt.',
       'Tillägg som HeadingsMap visar rubrikerna, och det finns tillägg som visar alt-texter.',
     ],
@@ -98,7 +98,7 @@ export default function ErrorsPage() {
         <h1>Exempel på brister på demosidan och hur du hittar dem</h1>
         <div className="summary-box">
           <p>
-            <a href={base}>Versionen med brister</a> får 0 brister i axe och 100 poäng i Lighthouse. Ändå
+            axe hittar inga brister i <a href={base}>versionen med brister</a>, och den får 100 poäng i Lighthouse. Ändå
             finns det minst 37 brister som gör sidan svår eller omöjlig att använda. Här listar vi de brister vi
             känner till. Det kan finnas fler som vi inte har hittat.
           </p>
@@ -143,7 +143,7 @@ export default function ErrorsPage() {
               <li key={issue.n}>
                 <article aria-labelledby={`issue-${issue.n}`} className="issue">
                   <h3 id={`issue-${issue.n}`}>
-                    <span className="issue-number">{issue.bonus ? 'Bonus' : `Fel ${issue.n}`}:</span>{' '}
+                    <span className="issue-number">{issue.bonus ? 'Bonus' : `Brist ${issue.n}`}:</span>{' '}
                     {issue.title.replace(/^Bonus: /, '')}
                   </h3>
                   <dl>
