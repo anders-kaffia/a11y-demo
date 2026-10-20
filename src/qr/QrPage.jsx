@@ -16,7 +16,7 @@ export default function QrPage() {
 
   return (
     <main className="qr-page">
-      <h1>Öppna demon i mobilen</h1>
+      <h1>QR-koden länkar till demosidan</h1>
       <div className="qr-code" role="img" aria-label={`QR-kod till ${url}`} dangerouslySetInnerHTML={{ __html: svg }} />
       <p className="qr-url">
         <a href={url}>{url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a>
