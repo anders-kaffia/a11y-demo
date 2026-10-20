@@ -2,11 +2,14 @@
 :root {
   --bg: #faf7f2;
   --surface: #ffffff;
-  --text: #2b2118;
-  --muted: #5c534b;
-  --brand: #6f3b1e;
+  --text: #716a64;
+  --text-large: #8c8782;
+  --muted: #777069;
+  --brand: #906852;
+  --brand-large: #ab8d7d;
   --brand-dark: #4e2812;
-  --sale: #b3261e;
+  --sale: #c04a44;
+  --dark: #7b746f;
   --border: #e6dfd5;
   font-size: 16px;
   font-family: Roboto, sans-serif;
@@ -17,6 +20,9 @@
 * { box-sizing: border-box; }
 body { margin: 0; font-size: 16px; line-height: 1.5; }
 h2 { font-size: 24px; }
+/* All text has as low contrast as possible without axe reporting it: just over 4.5:1, and just over
+   3:1 for large text (24 px, or 18.66 px bold). It passes WCAG AA, but is tiring to read. */
+h1, h2, .card-title { color: var(--text-large); }
 
 /* A11Y-ISSUE #14: The focus ring has about 1.2:1 contrast and is practically invisible.
    A11Y-ISSUE #30: box-shadow is removed in Windows High Contrast – then there is no focus indicator at all. */
@@ -44,7 +50,7 @@ h2 { font-size: 24px; }
   padding: 16px 32px;
   font-size: 17px;
   color: #fff;
-  background: #2b2118;
+  background: var(--dark);
   box-shadow: 0 4px 16px rgb(0 0 0 / 0.25);
 }
 .info-banner p { max-width: 1400px; margin: 0 0 8px; }
@@ -66,7 +72,7 @@ h2 { font-size: 24px; }
 .logo {
   font-weight: 800;
   font-size: 22px;
-  color: var(--brand);
+  color: var(--brand-large);
   text-decoration: none;
 }
 
@@ -224,7 +230,7 @@ main { max-width: 1680px; margin: 0 auto; padding: 0 32px 64px; }
   font-size: 13px;
   font-weight: 400;
   color: #fff;
-  background: #2b2118;
+  background: var(--dark);
   border-radius: 6px;
 }
 /* A11Y-ISSUE #29: :hover only (not :focus), pointer-events: none and an 8 px gap – the tooltip
@@ -417,13 +423,13 @@ main { max-width: 1680px; margin: 0 auto; padding: 0 32px 64px; }
 
 .card--sold-out .card-img { filter: grayscale(1); }
 /* Fade out the details of products that can't be bought */
-/* A11Y-ISSUE #26: filter: opacity(0.4) gives about 2–2.5:1 contrast but passes axe. */
+/* A11Y-ISSUE #26: filter: opacity(0.4) gives about 1.5–1.8:1 contrast but passes axe. */
 .card--sold-out .card-title,
 .card--sold-out .card-desc,
 .card--sold-out .card-price,
 .card--sold-out .card-more { filter: opacity(0.4); }
 /* A11Y-ISSUE #12: Looks disabled but is not. */
-.card--sold-out .card-add { background: #6b6560; cursor: not-allowed; }
+.card--sold-out .card-add { background: #7a7571; cursor: not-allowed; }
 
 .badge {
   position: absolute;
@@ -433,7 +439,7 @@ main { max-width: 1680px; margin: 0 auto; padding: 0 32px 64px; }
   font-size: 14px;
   font-weight: 700;
   color: #fff;
-  background: #2b2118;
+  background: var(--dark);
   border-radius: 999px;
 }
 
@@ -521,7 +527,7 @@ main { max-width: 1680px; margin: 0 auto; padding: 0 32px 64px; }
   z-index: 200;
   padding: 13px 21px;
   color: #fff;
-  background: #2b2118;
+  background: var(--dark);
   border-radius: 10px;
   box-shadow: 0 8px 24px rgb(0 0 0 / 0.25);
 }
@@ -617,7 +623,7 @@ main { max-width: 1680px; margin: 0 auto; padding: 0 32px 64px; }
   font-size: 22px;
   font-weight: 700;
   color: #fff;
-  background: #1e6b34;
+  background: #6c9f7b;
   border-radius: 10px;
 }
 .checkout-terms { color: var(--muted); }

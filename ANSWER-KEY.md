@@ -334,7 +334,7 @@ Each issue describes what the code claims, what actually happens, why the tools 
 **WCAG:** 1.4.3 Contrast (Minimum) (AA)
 
 - **The code looks fine:** It is a common design pattern to fade out products that cannot be bought.
-- **What actually happens:** The name, description, price and *"Läs mer"* on Kenya AA are shown at 40 % opacity. The grey text on a white background has a contrast of about 2–2.5:1. The information is still there and it matters (which product, which price), but it is hard to read.
+- **What actually happens:** The name, description, price and *"Läs mer"* on Kenya AA are shown at 40 % opacity. The grey text on a white background has a contrast of about 1.5–1.8:1. The information is still there and it matters (which product, which price), but it is hard to read.
 - **Why the tools miss it:** axe takes the CSS `opacity` property into account, but not `filter: opacity()`, which looks exactly the same. We tested seven variants:
 
   | Technique | axe |

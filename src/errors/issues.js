@@ -255,7 +255,7 @@ export const issues = [
     n: 26,
     title: 'Blek text på slutsålda varor',
     where: 'Kenya AA',
-    problem: 'Texten är bleknad med ett filter som verktygen inte upptäcker. Kontrasten blir cirka 2:1.',
+    problem: 'Texten är bleknad med ett filter som verktygen inte upptäcker. Kontrasten blir cirka 1,7:1.',
     find: 'Titta på kortet och mät kontrasten med en färgpipett.',
     wcag: '1.4.3',
     affects: 'Personer med nedsatt syn.',
